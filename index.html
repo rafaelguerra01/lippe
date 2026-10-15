@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le Jeu de Lecture de Lippe 🌟</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-cream: #FFFDF9;
+      --card-bg: #FFFFFF;
+      --text-dark: #2C3E50;
+      --primary: #4A90E2;
+      --success: #27AE60;
+      --warning: #E67E22;
+      --error: #E74C3C;
+      --font-family: 'Lexend', 'Comic Neue', 'Comic Sans MS', sans-serif;
+      --font-scale: 1;
+      --letter-spacing: 0.08em;
+      --word-spacing: 0.16em;
+      --line-height: 1.9;
+      --theme-bg: #FAF5E9; /* Warm dyslexia-friendly cream tint */
+      
+      /* User-specified keyword colors */
+      --color-ou: #7B1FA2;       /* Violet / Purple */
+      --color-ou-bg: #F3E5F5;
+      --color-ou-border: #CE93D8;
+      
+      --color-qui: #2E7D32;      /* Vert / Green */
+      --color-qui-bg: #E8F5E9;
+      --color-qui-border: #A5D6A7;
+      
+      --color-pourquoi: #C62828; /* Rouge / Red */
+      --color-pourquoi-bg: #FFEBEE;
+      --color-pourquoi-border: #EF9A9A;
+      
+      --color-quand: #6D4C41;    /* Marron / Brown */
+      --color-quand-bg: #EFEBE9;
+      --color-quand-border: #BCAAA4;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--theme-bg);
+      color: var(--text-dark);
+      font-family: var(--font-family);
+      line-height: var(--line-height);
+      letter-spacing: var(--letter-spacing);
+      word-spacing: var(--word-spacing);
+      font-size: calc(18px * var(--font-scale));
+      padding-bottom: 60px;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* Reading ruler / guide visual aid */
+    #reading-ruler {
+      display: none;
+      position: fixed;
+      left: 0;
+      right: 0;
+      height: 54px;
+      background: rgba(255, 235, 59, 0.22);
+      border-top: 2px dashed rgba(245, 127, 23, 0.5);
+      border-bottom: 2px dashed rgba(245, 127, 23, 0.5);
+      pointer-events: none;
+      z-index: 9999;
+      transform: translateY(-50%);
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 16px 20px;
+    }
+
+    /* Top Accessibility Bar */
+    .toolbar {
+      background: #FFFFFF;
+      border-radius: 18px;
+      padding: 12px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+      border: 2px solid #E8E2D2;
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-tool {
+      background: #F4EFE6;
+      border: 2px solid #D8CEBC;
+      color: #3E382E;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-tool:hover {
+      background: #EAE1D3;
+      transform: translateY(-1px);
+    }
+
+    .btn-tool.active {
+      background: #4A90E2;
+      color: white;
+      border-color: #2F72BF;
+    }
+
+    .color-swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid #999;
+      cursor: pointer;
+      display: inline-block;
+      transition: transform 0.15s;
+    }
+
+    .color-swatch:hover, .color-swatch.active {
+      transform: scale(1.15);
+      border-color: #333;
+      box-shadow: 0 0 0 2px #4A90E2;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      font-size: calc(28px * var(--font-scale));
+      color: #2C3E50;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      font-size: calc(16px * var(--font-scale));
+      color: #607274;
+    }
+
+    /* Keyword Color Legend Bar */
+    .legend-bar {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 16px 0 24px 0;
+    }
+
+    .legend-item {
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: calc(15px * var(--font-scale));
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+
+    /* Keyword spans */
+    .kw-ou {
+      color: var(--color-ou);
+      background-color: var(--color-ou-bg);
+      border: 2px solid var(--color-ou-border);
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-weight: 800;
+      display: inline-block;
+    }
+
+    .kw-qui {
+      color: var(--color-qui);
+      background-color: var(--color-qui-bg);
+      border: 2px solid var(--color-qui-border);
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-weight: 800;
+      display: inline-block;
+    }
+
+    .kw-pourquoi {
+      color: var(--color-pourquoi);
+      background-color: var(--color-pourquoi-bg);
+      border: 2px solid var(--color-pourquoi-border);
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-weight: 800;
+      display: inline-block;
+    }
+
+    .kw-quand {
+      color: var(--color-quand);
+      background-color: var(--color-quand-bg);
+      border: 2px solid var(--color-quand-border);
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-weight: 800;
+      display: inline-block;
+    }
+
+    /* Navigation Tabs */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .tab-btn {
+      background: #FFFFFF;
+      border: 2px solid #D8CEBC;
+      color: #4A4A4A;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: calc(16px * var(--font-scale));
+      padding: 10px 22px;
+      border-radius: 16px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.04);
+    }
+
+    .tab-btn.active {
+      background: #4A90E2;
+      color: #FFFFFF;
+      border-color: #357ABD;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(74, 144, 226, 0.25);
+    }
+
+    /* Main Game Box */
+    .game-card {
+      background: #FFFFFF;
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      border: 3px solid #EAE3D2;
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    /* Progress & Score Bar */
+    .progress-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .progress-bar-container {
+      flex-grow: 1;
+      height: 16px;
+      background: #EFE9DC;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #DFD7C5;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4A90E2, #27AE60);
+      width: 10%;
+      border-radius: 10px;
+      transition: width 0.4s ease;
+    }
+
+    .score-badge {
+      background: #FFF8E1;
+      border: 2px solid #FFE082;
+      color: #B78103;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: calc(16px * var(--font-scale));
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Question Display */
+    .question-box {
+      background: #F8FAFC;
+      border: 3px solid #E2E8F0;
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 28px;
+      text-align: center;
+      position: relative;
+    }
+
+    .question-badge {
+      display: inline-block;
+      background: #4A90E2;
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: calc(13px * var(--font-scale));
+      padding: 4px 14px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .question-text {
+      font-size: calc(24px * var(--font-scale));
+      font-weight: 700;
+      color: #1E293B;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    
+
+    
+
+    
+
+    /* Answers Grid */
+    .answers-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (min-width: 650px) {
+      .answers-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .answer-card {
+      background: #FFFFFF;
+      border: 3px solid #E2E8F0;
+      border-radius: 18px;
+      padding: 18px 20px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: calc(19px * var(--font-scale));
+      font-weight: 600;
+      color: #1E293B;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.03);
+    }
+
+    .answer-card:hover {
+      border-color: #4A90E2;
+      background: #F0F7FF;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(74, 144, 226, 0.12);
+    }
+
+    .answer-card.correct {
+      border-color: #27AE60 !important;
+      background: #E8F8F0 !important;
+      color: #1B5E20 !important;
+      animation: pulseSuccess 0.5s ease;
+    }
+
+    .answer-card.wrong {
+      border-color: #E67E22 !important;
+      background: #FEF6EC !important;
+      color: #A04000 !important;
+      animation: shakeWrong 0.4s ease;
+    }
+
+    .answer-card.disabled {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .answer-letter {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #EEF2F6;
+      color: #64748B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .answer-content {
+      flex-grow: 1;
+    }
+
+    
+
+    
+
+    /* Feedback Box */
+    .feedback-box {
+      display: none;
+      border-radius: 18px;
+      padding: 20px 24px;
+      text-align: center;
+      margin-top: 20px;
+      font-weight: 700;
+      font-size: calc(20px * var(--font-scale));
+      animation: fadeIn 0.3s ease;
+    }
+
+    .feedback-box.correct {
+      display: block;
+      background: #E8F8F0;
+      color: #1E7E34;
+      border: 3px solid #A3E9B9;
+    }
+
+    .feedback-box.wrong {
+      display: block;
+      background: #FEF3EB;
+      color: #D35400;
+      border: 3px solid #FAD7B2;
+    }
+
+    .btn-next {
+      background: #27AE60;
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 16px;
+      font-family: inherit;
+      font-size: calc(18px * var(--font-scale));
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+      transition: all 0.15s ease;
+    }
+
+    .btn-next:hover {
+      background: #219653;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(39, 174, 96, 0.4);
+    }
+
+    /* Matching Pairs Mode */
+    .pairs-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .pair-column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .pair-card {
+      background: #FFFFFF;
+      border: 3px solid #E2E8F0;
+      border-radius: 16px;
+      padding: 14px 18px;
+      cursor: pointer;
+      font-size: calc(17px * var(--font-scale));
+      font-weight: 600;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 72px;
+    }
+
+    .pair-card:hover {
+      border-color: #4A90E2;
+      background: #F4F9FF;
+    }
+
+    .pair-card.selected {
+      border-color: #4A90E2;
+      background: #E0EFFF;
+      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.25);
+    }
+
+    .pair-card.matched {
+      border-color: #27AE60;
+      background: #E8F8F0;
+      color: #1E7E34;
+      pointer-events: none;
+      opacity: 0.9;
+    }
+
+    /* Reference Cheat Sheet Guide Tab */
+    .cheat-sheet-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 600px) {
+      .cheat-sheet-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .cheat-card {
+      border-radius: 18px;
+      padding: 20px;
+      border: 3px solid transparent;
+    }
+
+    .cheat-card.c-qui {
+      background: var(--color-qui-bg);
+      border-color: var(--color-qui-border);
+      color: var(--color-qui);
+    }
+
+    .cheat-card.c-ou {
+      background: var(--color-ou-bg);
+      border-color: var(--color-ou-border);
+      color: var(--color-ou);
+    }
+
+    .cheat-card.c-quand {
+      background: var(--color-quand-bg);
+      border-color: var(--color-quand-border);
+      color: var(--color-quand);
+    }
+
+    .cheat-card.c-pourquoi {
+      background: var(--color-pourquoi-bg);
+      border-color: var(--color-pourquoi-border);
+      color: var(--color-pourquoi);
+    }
+
+    .cheat-title {
+      font-size: calc(22px * var(--font-scale));
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .cheat-desc {
+      font-size: calc(16px * var(--font-scale));
+      color: #333333;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    .cheat-examples {
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: calc(15px * var(--font-scale));
+      color: #222222;
+      list-style-type: none;
+    }
+
+    .cheat-examples li {
+      margin: 4px 0;
+    }
+
+    /* Animations */
+    @keyframes pulseSuccess {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shakeWrong {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Confetti Canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10000;
+    }
+
+    /* Victory Card */
+    .victory-card {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .victory-icon {
+      font-size: 72px;
+      margin-bottom: 16px;
+      animation: bounce 1s infinite alternate;
+    }
+
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-12px); }
+    }
+
+    .victory-card h2 {
+      font-size: calc(30px * var(--font-scale));
+      color: #27AE60;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .victory-card p {
+      font-size: calc(20px * var(--font-scale));
+      color: #334155;
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Reading Ruler -->
+  <div id="reading-ruler"></div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="container">
+    
+    <!-- Dyslexia Accessibility Toolbar -->
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <span style="font-weight: 700; font-size: 14px; color: #666;">Aide à la lecture :</span>
+        <button class="btn-tool" id="btn-ruler" onclick="toggleRuler()">📏 Règle de lecture</button>
+        <button class="btn-tool" onclick="changeFont('Lexend')">Police Lexend</button>
+        <button class="btn-tool" onclick="changeFont('Comic')">Police Comic</button>
+        <button class="btn-tool" onclick="adjustFontSize(-0.1)">A-</button>
+        <button class="btn-tool" onclick="adjustFontSize(0.1)">A+</button>
+      </div>
+
+      <div class="toolbar-group">
+        <span style="font-weight: 700; font-size: 14px; color: #666;">Fond doux :</span>
+        <span class="color-swatch active" style="background:#FAF5E9;" onclick="setThemeBg('#FAF5E9', this)" title="Crème doux (recommandé)"></span>
+        <span class="color-swatch" style="background:#EDF5FC;" onclick="setThemeBg('#EDF5FC', this)" title="Bleu ciel apaisant"></span>
+        <span class="color-swatch" style="background:#EDF7ED;" onclick="setThemeBg('#EDF7ED', this)" title="Menthe douce"></span>
+        <span class="color-swatch" style="background:#FFFFFF;" onclick="setThemeBg('#FFFFFF', this)" title="Blanc pur"></span>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+      <h1>Le Jeu des Questions de Lippe 🌟</h1>
+      <p>Lis attentivement la question et clique sur la bonne réponse !</p>
+      
+      <!-- User Specified Color Legend -->
+      <div class="legend-bar">
+        <span class="legend-item kw-qui">👤 Qui = Vert</span>
+        <span class="legend-item kw-ou">🏠 Où / Ou = Violet</span>
+        <span class="legend-item kw-quand">⏰ Quand = Marron</span>
+        <span class="legend-item kw-pourquoi">❓ Pourquoi = Rouge</span>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-quiz-btn" onclick="switchTab('quiz')">🎮 Le Grand Quiz</button>
+      <button class="tab-btn" id="tab-detective-btn" onclick="switchTab('detective')">🕵️ Mode Détective (Avancé)</button>
+      <button class="tab-btn" id="tab-pairs-btn" onclick="switchTab('pairs')">🧩 Relier les Paires</button>
+      <button class="tab-btn" id="tab-cheat-btn" onclick="switchTab('cheat')">💡 Aide-Mémoire Magique</button>
+    </div>
+
+    <!-- TAB 1: QUIZ INTERACTIF -->
+    <div id="tab-quiz" class="game-card">
+      
+      <!-- Normal Quiz Playing Screen -->
+      <div id="quiz-play-area">
+        <div class="progress-section">
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+          </div>
+          <div class="score-badge" id="question-counter">Question 1 / 10</div>
+          <div class="score-badge" id="star-score">⭐ 0 étoiles</div>
+          <button class="btn-tool" onclick="restartQuiz()" style="font-weight: 700; background: #FFF8E1; border-color: #FFE082; color: #9A6700;" title="Recommencer le jeu depuis le début">🔄 Recommencer</button>
+        </div>
+
+        <div class="question-box">
+          <span class="question-badge" id="q-category">Question</span>
+          <div class="question-text" id="q-text">
+            Chargement...
+          </div>
+        </div>
+
+        <div class="answers-grid" id="answers-container">
+          <!-- Filled dynamically by JavaScript -->
+        </div>
+
+        <div class="feedback-box" id="feedback-message">
+          <!-- French compliments or encouraging words appear here -->
+        </div>
+
+        <div style="text-align: center;">
+          <button class="btn-next" id="btn-next-question" style="display: none;" onclick="nextQuestion()">
+            Question suivante ➜
+          </button>
+        </div>
+      </div>
+
+      <!-- Victory Screen -->
+      <div id="victory-area" class="victory-card">
+        <div class="victory-icon">🏆 🌟 🎈</div>
+        <h2>Incroyable, Lippe !</h2>
+        <p>Tu as réussi toutes les 10 questions avec brio ! Tu es un super champion de la lecture !</p>
+        <div style="margin-bottom: 24px;">
+          <span class="score-badge" style="display: inline-flex; font-size: 22px; padding: 10px 24px;">
+            ⭐⭐⭐⭐⭐ 10 / 10 !
+          </span>
+        </div>
+        <button class="btn-next" onclick="restartQuiz()">
+          🔄 Recommencer pour s'amuser encore !
+        </button>
+      </div>
+
+    </div>
+
+        <!-- TAB: MODE DÉTECTIVE (NIVEAU AVANCÉ) -->
+    <div id="tab-detective" class="game-card" style="display: none;">
+      
+      <div id="detective-play-area">
+        <div class="progress-section">
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="detective-progress-fill" style="width: 10%;"></div>
+          </div>
+          <div class="score-badge" id="detective-phrase-counter">Phrase 1 / 10</div>
+          <div class="score-badge" id="detective-clues-counter">🔍 0 / 4 indices</div>
+          <button class="btn-tool" onclick="restartDetective()" style="font-weight: 700; background: #FFF8E1; border-color: #FFE082; color: #9A6700;" title="Recommencer depuis la première phrase">🔄 Recommencer</button>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 8px;">
+          <span style="font-size: 14px; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 0.1em;">
+            📖 Lis attentivement la grande phrase :
+          </span>
+        </div>
+
+        <!-- Sentence Display Box -->
+        <div class="question-box" style="background: #FFFFFF; border: 3px solid #CBD5E1; padding: 24px; min-height: 100px;">
+          <div id="detective-sentence-display" style="font-size: calc(22px * var(--font-scale)); font-weight: 700; color: #1E293B; line-height: 2.1;">
+            Chargement de la phrase...
+          </div>
+        </div>
+
+        <!-- 4 Clues Status Badges -->
+        <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;" id="detective-clue-badges">
+          <!-- Badges generated dynamically -->
+        </div>
+
+        <!-- Current Clue Prompt -->
+        <div style="text-align: center; margin-bottom: 18px;">
+          <h3 id="detective-prompt" style="font-size: calc(21px * var(--font-scale)); font-weight: 800; color: #2C3E50;">
+            Trouve : 👤 Qui ?
+          </h3>
+        </div>
+
+        <!-- 4 Constituent Choices -->
+        <div class="answers-grid" id="detective-choices-container">
+          <!-- Filled dynamically -->
+        </div>
+
+        <div class="feedback-box" id="detective-feedback"></div>
+
+        <div style="text-align: center;">
+          <button class="btn-next" id="btn-next-detective" style="display: none;" onclick="nextDetectivePhrase()">
+            Phrase suivante ➜
+          </button>
+        </div>
+      </div>
+
+      <!-- Detective Victory Screen -->
+      <div id="detective-victory-area" class="victory-card">
+        <div class="victory-icon">🕵️‍♂️ 🏆 ⭐</div>
+        <h2>Incroyable, Super Détective Lippe !</h2>
+        <p>Tu as analysé avec succès les 10 grandes phrases et trouvé tous les indices Qui, Où, Quand et Pourquoi !</p>
+        <div style="margin-bottom: 24px;">
+          <span class="score-badge" style="display: inline-flex; font-size: 22px; padding: 10px 24px;">
+            ⭐⭐⭐⭐⭐ 10 / 10 Enquêtes Réussies !
+          </span>
+        </div>
+        <button class="btn-next" onclick="restartDetective()">
+          🔄 Recommencer les enquêtes pour s'amuser !
+        </button>
+      </div>
+
+    </div>
+
+<!-- TAB 2: RELIER LES PAIRES (MATCHING GAME) -->
+    <div id="tab-pairs" class="game-card" style="display: none;">
+      <h2 style="text-align:center; margin-bottom: 12px; font-size: 22px; color: #2C3E50;">
+        Clique sur une question à gauche, puis sur sa réponse à droite !
+      </h2>
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge" id="pairs-score" style="display: inline-flex;">Paires trouvées : 0 / 10</span>
+      </div>
+
+      <div class="pairs-container">
+        <div class="pair-column" id="pairs-questions"></div>
+        <div class="pair-column" id="pairs-answers"></div>
+      </div>
+
+      <div style="text-align:center; margin-top: 24px;">
+        <button class="btn-tool" onclick="initPairsMode()" style="font-size: 17px; padding: 10px 20px;">
+          🔀 Mélanger les cartes
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB 3: AIDE-MÉMOIRE DES MOTS MAGIQUES -->
+    <div id="tab-cheat" class="game-card" style="display: none;">
+      <h2 style="text-align:center; margin-bottom: 20px; font-size: 24px;">
+        Les 4 Mots Magiques pour Poser des Questions ✨
+      </h2>
+
+      <div class="cheat-sheet-grid">
+        
+        <!-- QUI -->
+        <div class="cheat-card c-qui">
+          <div class="cheat-title">
+            <span>👤</span> Qui (Vert)
+          </div>
+          <div class="cheat-desc">
+            On utilise <strong>Qui</strong> pour parler d'une <strong>personne</strong> ou d'un personnage.
+          </div>
+          <ul class="cheat-examples">
+            <li>👉 <strong>Qui lit un livre ?</strong> ➔ Lippe lit un livre.</li>
+            <li>👉 <strong>Qui est ton papa ?</strong> ➔ Rafael c'est mon papa.</li>
+            <li>👉 <strong>Qui prépare le dîner ?</strong> ➔ Maman prépare le dîner.</li>
+          </ul>
+        </div>
+
+        <!-- OU -->
+        <div class="cheat-card c-ou">
+          <div class="cheat-title">
+            <span>🏠</span> Où / Ou (Violet)
+          </div>
+          <div class="cheat-desc">
+            On utilise <strong>Où</strong> pour parler d'un <strong>lieu</strong> ou d'un <strong>endroit</strong>.
+          </div>
+          <ul class="cheat-examples">
+            <li>👉 <strong>Où est-ce que tu te laves les mains ?</strong></li>
+            <li>➔ Dans la salle de bain !</li>
+          </ul>
+        </div>
+
+        <!-- QUAND -->
+        <div class="cheat-card c-quand">
+          <div class="cheat-title">
+            <span>⏰</span> Quand (Marron)
+          </div>
+          <div class="cheat-desc">
+            On utilise <strong>Quand</strong> pour parler du <strong>temps</strong>, d'un jour ou d'un moment.
+          </div>
+          <ul class="cheat-examples">
+            <li>👉 <strong>Quand as-tu joué le soccer ?</strong> ➔ Hier soir.</li>
+            <li>👉 <strong>Quand maman arrive ?</strong> ➔ Aujourd'hui.</li>
+            <li>👉 <strong>Quand bois-tu du lait au chocolat ?</strong> ➔ Ce matin.</li>
+          </ul>
+        </div>
+
+        <!-- POURQUOI -->
+        <div class="cheat-card c-pourquoi">
+          <div class="cheat-title">
+            <span>❓</span> Pourquoi (Rouge)
+          </div>
+          <div class="cheat-desc">
+            On utilise <strong>Pourquoi</strong> pour demander une <strong>raison</strong>. La réponse commence presque toujours par <strong>« Parce que... »</strong>.
+          </div>
+          <ul class="cheat-examples">
+            <li>👉 <strong>Pourquoi veux-tu manger ?</strong> ➔ Parce que j'ai très faim.</li>
+            <li>👉 <strong>Pourquoi fais-tu une fête ?</strong> ➔ Parce que c'est mon anniversaire.</li>
+            <li>👉 <strong>Pourquoi voyagez-vous en été ?</strong> ➔ Parce que nous aimons voyager.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    /* =====================================================================
+       1. DATA DEFINITIONS (From lippe.jpg)
+       ===================================================================== */
+    const GAME_ITEMS = [
+      {
+        id: 1,
+        question: "Pourquoi veux-tu manger ?",
+        keyword: "pourquoi",
+        answer: "Parce que j'ai très faim.",
+        distractors: [
+          "Dans la salle de bain",
+          "Hier soir, j'ai joué le soccer",
+          "Lippe lit un livre."
+        ]
+      },
+      {
+        id: 2,
+        question: "Qui lit un livre ?",
+        keyword: "qui",
+        answer: "Lippe lit un livre.",
+        distractors: [
+          "Ce matin, je bois un grand lait au chocolat",
+          "Parce que c'est mon anniversaire.",
+          "Dans la salle de bain"
+        ]
+      },
+      {
+        id: 3,
+        question: "Qui prépare le dîner ?",
+        keyword: "qui",
+        answer: "Maman prépare le dîner.",
+        distractors: [
+          "Maman arrive aujourd'hui",
+          "Hier soir, j'ai joué le soccer",
+          "Parce que j'ai très faim."
+        ]
+      },
+      {
+        id: 4,
+        question: "Pourquoi fais-tu une fête ?",
+        keyword: "pourquoi",
+        answer: "Parce que c'est mon anniversaire.",
+        distractors: [
+          "Rafael c'est mon papa",
+          "Dans la salle de bain",
+          "Ce matin, je bois un grand lait au chocolat"
+        ]
+      },
+      {
+        id: 5,
+        question: "Où est-ce que tu te laves les mains ?",
+        keyword: "ou",
+        answer: "Dans la salle de bain",
+        distractors: [
+          "Parce que j'ai très faim.",
+          "Hier soir, j'ai joué le soccer",
+          "Maman prépare le dîner."
+        ]
+      },
+      {
+        id: 6,
+        question: "Quand as-tu joué le soccer ?",
+        keyword: "quand",
+        answer: "Hier soir, j'ai joué le soccer",
+        distractors: [
+          "Lippe lit un livre.",
+          "Rafael c'est mon papa",
+          "Parce que nous aimons voyager en été."
+        ]
+      },
+      {
+        id: 7,
+        question: "Quand maman arrive ?",
+        keyword: "quand",
+        answer: "Maman arrive aujourd'hui",
+        distractors: [
+          "Maman prépare le dîner.",
+          "Dans la salle de bain",
+          "Parce que c'est mon anniversaire."
+        ]
+      },
+      {
+        id: 8,
+        question: "Quand tu bois du lait au chocolat ?",
+        keyword: "quand",
+        answer: "Ce matin, je bois un grand lait au chocolat",
+        distractors: [
+          "Parce que j'ai très faim.",
+          "Hier soir, j'ai joué le soccer",
+          "Lippe lit un livre."
+        ]
+      },
+      {
+        id: 9,
+        question: "Qui est ton papa ?",
+        keyword: "qui",
+        answer: "Rafael c'est mon papa",
+        distractors: [
+          "Lippe lit un livre.",
+          "Maman arrive aujourd'hui",
+          "Dans la salle de bain"
+        ]
+      },
+      {
+        id: 10,
+        question: "Pourquoi voyagez-vous en été ?",
+        keyword: "pourquoi",
+        answer: "Parce que nous aimons voyager en été.",
+        distractors: [
+          "Hier soir, j'ai joué le soccer",
+          "Ce matin, je bois un grand lait au chocolat",
+          "Rafael c'est mon papa"
+        ]
+      }
+    ];
+
+    // French Encouraging Compliments when correct
+    const COMPLIMENTS = [
+      "Bravo Lippe ! Tu es un champion ! 🌟",
+      "Super ! Excellente lecture ! 🎉",
+      "Magnifique ! C'est exactement la bonne réponse ! 🚀",
+      "Génial ! Tu as trouvé tout de suite ! 👏",
+      "Fantastique travail ! Continue comme ça ! 🌈",
+      "Trop fort ! Tu lis tellement bien ! 🎈",
+      "Bravo ! Quelle belle réussite ! ⭐",
+      "Chapeau l'artiste ! C'est parfait ! 🎯"
+    ];
+
+    // French Motivating Phrases when incorrect
+    const MOTIVATIONS = [
+      "Ce n'est pas grave, réessaie ! Tu es tout à fait capable ! 💪",
+      "Presque ! Prends ton temps pour bien lire, tu peux y arriver ! ✨",
+      "Courage ! Relis la question doucement, la bonne réponse est tout près ! 🔍",
+      "Ne t'inquiète pas, on apprend en essayant ! Fais une nouvelle tentative ! 🌟",
+      "Tu vas y arriver ! Regarde bien le mot magique en couleur ! 💡",
+      "Respire un bon coup et essaie encore, tu as du talent ! 🚀"
+    ];
+
+    /* =====================================================================
+       2. STATE MANAGEMENT (Sans son / Mode silencieux)
+       ===================================================================== */
+    let currentQuizIndex = 0;
+    let scoreStars = 0;
+    let isRulerActive = false;
+    let fontScale = 1.0;
+    let answeredCurrent = false;
+
+    /* =====================================================================
+       3. TEXT FORMATTING WITH KEYWORD COLORS
+       ou / où = purple, qui = green, pourquoi = red, quand = brown
+       ===================================================================== */
+    function formatQuestionWithKeywords(str) {
+      // Regex detects case-insensitive whole words for ou, où, qui, quand, pourquoi
+      return str.replace(/\b(où|ou|qui|quand|pourquoi)\b/gi, (match) => {
+        const lower = match.toLowerCase();
+        if (lower === 'ou' || lower === 'où') {
+          return `<span class="kw-ou">${match}</span>`;
+        } else if (lower === 'qui') {
+          return `<span class="kw-qui">${match}</span>`;
+        } else if (lower === 'pourquoi') {
+          return `<span class="kw-pourquoi">${match}</span>`;
+        } else if (lower === 'quand') {
+          return `<span class="kw-quand">${match}</span>`;
+        }
+        return match;
+      });
+    }
+
+    /* =====================================================================
+       4. QUIZ LOGIC
+       ===================================================================== */
+    function loadQuizQuestion(index) {
+      answeredCurrent = false;
+      const item = GAME_ITEMS[index];
+      
+      // Update progress
+      const percent = ((index + 1) / GAME_ITEMS.length) * 100;
+      document.getElementById('progress-fill').style.width = percent + '%';
+      document.getElementById('question-counter').textContent = `Question ${index + 1} / ${GAME_ITEMS.length}`;
+      document.getElementById('star-score').textContent = `⭐ ${scoreStars} étoiles`;
+
+      // Set question text & badge
+      document.getElementById('q-category').textContent = `Question avec « ${item.keyword.toUpperCase()} »`;
+      document.getElementById('q-text').innerHTML = formatQuestionWithKeywords(item.question);
+
+      // Hide feedback and next button
+      const feedbackBox = document.getElementById('feedback-message');
+      feedbackBox.className = 'feedback-box';
+      feedbackBox.style.display = 'none';
+      document.getElementById('btn-next-question').style.display = 'none';
+
+      // Prepare answer choices (correct answer + 3 distractors, shuffled)
+      const choices = [item.answer, ...item.distractors];
+      shuffleArray(choices);
+
+      const answersContainer = document.getElementById('answers-container');
+      answersContainer.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+
+      choices.forEach((choiceText, i) => {
+        const card = document.createElement('div');
+        card.className = 'answer-card';
+        card.innerHTML = `
+          <div class="answer-letter">${letters[i]}</div>
+          <div class="answer-content">${choiceText}</div>
+          
+        `;
+        card.onclick = () => handleAnswerClick(card, choiceText, item.answer);
+        answersContainer.appendChild(card);
+      });
+
+      // Automatically read the question aloud if sound is enabled
+      setTimeout(() => {
+      }, 250);
+    }
+
+    function handleAnswerClick(clickedCard, selectedAnswer, correctAnswer) {
+      if (answeredCurrent) return;
+
+      const feedbackBox = document.getElementById('feedback-message');
+
+      if (selectedAnswer === correctAnswer) {
+        // Correct answer!
+        answeredCurrent = true;
+        scoreStars++;
+        document.getElementById('star-score').textContent = `⭐ ${scoreStars} étoiles`;
+        clickedCard.classList.add('correct');
+
+        // Random French Compliment
+        const compliment = COMPLIMENTS[Math.floor(Math.random() * COMPLIMENTS.length)];
+        feedbackBox.textContent = compliment;
+        feedbackBox.className = 'feedback-box correct';
+        feedbackBox.style.display = 'block';
+
+        // Play happy chime & launch confetti!
+        launchConfetti();
+
+        // Show Next button
+        document.getElementById('btn-next-question').style.display = 'inline-flex';
+
+      } else {
+        // Incorrect answer
+        clickedCard.classList.add('wrong');
+        clickedCard.classList.add('disabled');
+
+        // Random French Motivating Phrase
+        const motivation = MOTIVATIONS[Math.floor(Math.random() * MOTIVATIONS.length)];
+        feedbackBox.textContent = motivation;
+        feedbackBox.className = 'feedback-box wrong';
+        feedbackBox.style.display = 'block';
+
+        // Play gentle chime
+      }
+    }
+
+    function nextQuestion() {
+      currentQuizIndex++;
+      if (currentQuizIndex < GAME_ITEMS.length) {
+        loadQuizQuestion(currentQuizIndex);
+      } else {
+        showVictoryScreen();
+      }
+    }
+
+    function showVictoryScreen() {
+      document.getElementById('quiz-play-area').style.display = 'none';
+      document.getElementById('victory-area').style.display = 'block';
+      launchConfetti();
+    }
+
+    function restartQuiz() {
+      currentQuizIndex = 0;
+      scoreStars = 0;
+      document.getElementById('quiz-play-area').style.display = 'block';
+      document.getElementById('victory-area').style.display = 'none';
+      loadQuizQuestion(0);
+    }
+
+    /* =====================================================================
+       5. MATCHING PAIRS MODE
+       ===================================================================== */
+    let selectedQuestionCard = null;
+    let selectedAnswerCard = null;
+    let pairsMatchedCount = 0;
+
+    function initPairsMode() {
+      pairsMatchedCount = 0;
+      document.getElementById('pairs-score').textContent = `Paires trouvées : 0 / ${GAME_ITEMS.length}`;
+      selectedQuestionCard = null;
+      selectedAnswerCard = null;
+
+      const qCol = document.getElementById('pairs-questions');
+      const aCol = document.getElementById('pairs-answers');
+      qCol.innerHTML = '';
+      aCol.innerHTML = '';
+
+      // Shuffle questions and answers independently
+      const shuffledQ = [...GAME_ITEMS];
+      const shuffledA = [...GAME_ITEMS];
+      shuffleArray(shuffledQ);
+      shuffleArray(shuffledA);
+
+      shuffledQ.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'pair-card';
+        card.dataset.id = item.id;
+        card.innerHTML = `
+          <span>${formatQuestionWithKeywords(item.question)}</span>
+          
+        `;
+        card.onclick = () => selectPairQuestion(card);
+        qCol.appendChild(card);
+      });
+
+      shuffledA.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'pair-card';
+        card.dataset.id = item.id;
+        card.innerHTML = `
+          <span>${item.answer}</span>
+          
+        `;
+        card.onclick = () => selectPairAnswer(card);
+        aCol.appendChild(card);
+      });
+    }
+
+    function selectPairQuestion(card) {
+      if (card.classList.contains('matched')) return;
+      if (selectedQuestionCard) selectedQuestionCard.classList.remove('selected');
+      selectedQuestionCard = card;
+      card.classList.add('selected');
+      checkPairMatch();
+    }
+
+    function selectPairAnswer(card) {
+      if (card.classList.contains('matched')) return;
+      if (selectedAnswerCard) selectedAnswerCard.classList.remove('selected');
+      selectedAnswerCard = card;
+      card.classList.add('selected');
+      checkPairMatch();
+    }
+
+    function checkPairMatch() {
+      if (selectedQuestionCard && selectedAnswerCard) {
+        const qId = selectedQuestionCard.dataset.id;
+        const aId = selectedAnswerCard.dataset.id;
+
+        if (qId === aId) {
+          // Matched!
+          selectedQuestionCard.classList.remove('selected');
+          selectedAnswerCard.classList.remove('selected');
+          selectedQuestionCard.classList.add('matched');
+          selectedAnswerCard.classList.add('matched');
+          pairsMatchedCount++;
+          document.getElementById('pairs-score').textContent = `Paires trouvées : ${pairsMatchedCount} / ${GAME_ITEMS.length}`;
+          const bravo = COMPLIMENTS[Math.floor(Math.random() * COMPLIMENTS.length)];
+
+          if (pairsMatchedCount === GAME_ITEMS.length) {
+            launchConfetti();
+            setTimeout(() => {
+            }, 600);
+          }
+          selectedQuestionCard = null;
+          selectedAnswerCard = null;
+        } else {
+          // Wrong pair
+          selectedQuestionCard.classList.add('wrong');
+          selectedAnswerCard.classList.add('wrong');
+          
+          setTimeout(() => {
+            if (selectedQuestionCard) {
+              selectedQuestionCard.classList.remove('selected', 'wrong');
+              selectedQuestionCard = null;
+            }
+            if (selectedAnswerCard) {
+              selectedAnswerCard.classList.remove('selected', 'wrong');
+              selectedAnswerCard = null;
+            }
+          }, 700);
+        }
+      }
+    }
+
+    /* =====================================================================
+       6. TABS & DYSLEXIA TOOLBAR HELPERS
+       ===================================================================== */
+    function switchTab(tabName) {
+      document.getElementById('tab-quiz').style.display = tabName === 'quiz' ? 'block' : 'none';
+      document.getElementById('tab-detective').style.display = tabName === 'detective' ? 'block' : 'none';
+      document.getElementById('tab-pairs').style.display = tabName === 'pairs' ? 'block' : 'none';
+      document.getElementById('tab-cheat').style.display = tabName === 'cheat' ? 'block' : 'none';
+
+      document.getElementById('tab-quiz-btn').classList.toggle('active', tabName === 'quiz');
+      document.getElementById('tab-detective-btn').classList.toggle('active', tabName === 'detective');
+      document.getElementById('tab-pairs-btn').classList.toggle('active', tabName === 'pairs');
+      document.getElementById('tab-cheat-btn').classList.toggle('active', tabName === 'cheat');
+
+      if (tabName === 'pairs') {
+        initPairsMode();
+      } else if (tabName === 'detective') {
+        initDetectiveMode();
+      }
+    }
+
+    function toggleRuler() {
+      isRulerActive = !isRulerActive;
+      const ruler = document.getElementById('reading-ruler');
+      ruler.style.display = isRulerActive ? 'block' : 'none';
+      document.getElementById('btn-ruler').classList.toggle('active', isRulerActive);
+    }
+
+    window.addEventListener('mousemove', (e) => {
+      if (isRulerActive) {
+        const ruler = document.getElementById('reading-ruler');
+        ruler.style.top = e.clientY + 'px';
+      }
+    });
+
+    function changeFont(fontName) {
+      if (fontName === 'Lexend') {
+        document.documentElement.style.setProperty('--font-family', "'Lexend', sans-serif");
+      } else {
+        document.documentElement.style.setProperty('--font-family', "'Comic Neue', 'Comic Sans MS', cursive, sans-serif");
+      }
+    }
+
+    function adjustFontSize(delta) {
+      fontScale = Math.min(1.4, Math.max(0.85, fontScale + delta));
+      document.documentElement.style.setProperty('--font-scale', fontScale);
+    }
+
+    function setThemeBg(bgColor, swatchEl) {
+      document.documentElement.style.setProperty('--theme-bg', bgColor);
+      document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
+      swatchEl.classList.add('active');
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function escapeSingleQuotes(str) {
+      return str.replace(/'/g, "\\'");
+    }
+
+    /* =====================================================================
+       7. CONFETTI EFFECT (Pure JS Canvas Particle Physics)
+       ===================================================================== */
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    let confettiParticles = [];
+    let confettiAnimationId = null;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function launchConfetti() {
+      confettiParticles = [];
+      const colors = ['#4A90E2', '#27AE60', '#F39C12', '#E74C3C', '#9B59B6', '#E91E63'];
+      for (let i = 0; i < 90; i++) {
+        confettiParticles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2 - 40,
+          vx: (Math.random() - 0.5) * 16,
+          vy: (Math.random() - 0.7) * 16,
+          size: Math.random() * 8 + 6,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          vRot: (Math.random() - 0.5) * 10,
+          opacity: 1
+        });
+      }
+      if (!confettiAnimationId) {
+        animateConfetti();
+      }
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confettiParticles.forEach((p, index) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.35; // gravity
+        p.vx *= 0.98; // air resistance
+        p.rotation += p.vRot;
+        p.opacity -= 0.012;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.globalAlpha = Math.max(0, p.opacity);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.7);
+        ctx.restore();
+
+        if (p.opacity <= 0) {
+          confettiParticles.splice(index, 1);
+        }
+      });
+
+      if (confettiParticles.length > 0) {
+        confettiAnimationId = requestAnimationFrame(animateConfetti);
+      } else {
+        confettiAnimationId = null;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      loadQuizQuestion(0);
+    });
+  
+    /* =====================================================================
+       8. ADVANCED SENTENCE DETECTIVE DATA & LOGIC (10 Phrases)
+       ===================================================================== */
+    const ADVANCED_PHRASES = [
+      {
+        id: 1,
+        fullText: "Paul mange une pomme dans le parc parce qu'il a faim aujourd'hui.",
+        qui: "Paul",
+        ou: "dans le parc",
+        quand: "aujourd'hui",
+        pourquoi: "parce qu'il a faim"
+      },
+      {
+        id: 2,
+        fullText: "Ce matin, Lippe lit une bande dessinée dans sa chambre parce qu'il adore les histoires.",
+        qui: "Lippe",
+        ou: "dans sa chambre",
+        quand: "Ce matin",
+        pourquoi: "parce qu'il adore les histoires"
+      },
+      {
+        id: 3,
+        fullText: "Hier soir, Rafael prépare une bonne pizza dans la cuisine parce que toute la famille a faim.",
+        qui: "Rafael",
+        ou: "dans la cuisine",
+        quand: "Hier soir",
+        pourquoi: "parce que toute la famille a faim"
+      },
+      {
+        id: 4,
+        fullText: "Maman plante de jolies fleurs dans le jardin cet après-midi parce que le soleil brille.",
+        qui: "Maman",
+        ou: "dans le jardin",
+        quand: "cet après-midi",
+        pourquoi: "parce que le soleil brille"
+      },
+      {
+        id: 5,
+        fullText: "Le samedi matin, les enfants jouent au soccer sur le terrain parce qu'ils veulent gagner le match.",
+        qui: "les enfants",
+        ou: "sur le terrain",
+        quand: "Le samedi matin",
+        pourquoi: "parce qu'ils veulent gagner le match"
+      },
+      {
+        id: 6,
+        fullText: "Le petit chien dort sous la table à midi parce qu'il est très fatigué.",
+        qui: "Le petit chien",
+        ou: "sous la table",
+        quand: "à midi",
+        pourquoi: "parce qu'il est très fatigué"
+      },
+      {
+        id: 7,
+        fullText: "Le lundi, l'enseignante écrit au tableau dans la classe parce qu'elle explique la leçon.",
+        qui: "L'enseignante",
+        ou: "dans la classe",
+        quand: "Le lundi",
+        pourquoi: "parce qu'elle explique la leçon"
+      },
+      {
+        id: 8,
+        fullText: "Pendant l'été, la famille se baigne dans le lac parce qu'il fait très chaud.",
+        qui: "la famille",
+        ou: "dans le lac",
+        quand: "Pendant l'été",
+        pourquoi: "parce qu'il fait très chaud"
+      },
+      {
+        id: 9,
+        fullText: "Sophie souffle ses bougies dans le salon ce soir parce que c'est sa fête.",
+        qui: "Sophie",
+        ou: "dans le salon",
+        quand: "ce soir",
+        pourquoi: "parce que c'est sa fête"
+      },
+      {
+        id: 10,
+        fullText: "L'astronaute observe les étoiles dans sa fusée la nuit parce qu'il fait une mission spatiale.",
+        qui: "L'astronaute",
+        ou: "dans sa fusée",
+        quand: "la nuit",
+        pourquoi: "parce qu'il fait une mission spatiale"
+      }
+    ];
+
+    const CLUE_TYPES = [
+      { key: 'qui', label: '👤 Qui ?', desc: "La personne ou l'animal", cls: 'kw-qui' },
+      { key: 'ou', label: '🏠 Où ?', desc: "L'endroit ou le lieu", cls: 'kw-ou' },
+      { key: 'quand', label: '⏰ Quand ?', desc: "Le moment ou le jour", cls: 'kw-quand' },
+      { key: 'pourquoi', label: '❓ Pourquoi ?', desc: "La raison (« Parce que »)", cls: 'kw-pourquoi' }
+    ];
+
+    let currentDetectivePhraseIndex = 0;
+    let solvedCluesForCurrentPhrase = new Set();
+    let currentClueTargetKey = 'qui';
+
+    function initDetectiveMode() {
+      currentDetectivePhraseIndex = 0;
+      loadDetectivePhrase(0);
+    }
+
+    function loadDetectivePhrase(index) {
+      currentDetectivePhraseIndex = index;
+      solvedCluesForCurrentPhrase.clear();
+      currentClueTargetKey = 'qui';
+
+      document.getElementById('detective-play-area').style.display = 'block';
+      document.getElementById('detective-victory-area').style.display = 'none';
+
+      // Update progress
+      const percent = ((index + 1) / ADVANCED_PHRASES.length) * 100;
+      document.getElementById('detective-progress-fill').style.width = percent + '%';
+      document.getElementById('detective-phrase-counter').textContent = 'Phrase ' + (index + 1) + ' / ' + ADVANCED_PHRASES.length;
+      document.getElementById('detective-clues-counter').textContent = '🔍 0 / 4 indices';
+
+      // Hide feedback and next
+      const fb = document.getElementById('detective-feedback');
+      fb.className = 'feedback-box';
+      fb.style.display = 'none';
+      document.getElementById('btn-next-detective').style.display = 'none';
+
+      renderDetectiveSentence();
+      renderDetectiveBadges();
+      renderDetectiveChoices();
+    }
+
+    function renderDetectiveSentence() {
+      const phrase = ADVANCED_PHRASES[currentDetectivePhraseIndex];
+      let displayHtml = phrase.fullText;
+
+      // Replace solved parts with their colored badges
+      CLUE_TYPES.forEach(clue => {
+        if (solvedCluesForCurrentPhrase.has(clue.key)) {
+          const textToHighlight = phrase[clue.key];
+          if (textToHighlight) {
+            // Safe replacement
+            const re = new RegExp('(' + escapeRegExp(textToHighlight) + ')', 'gi');
+            displayHtml = displayHtml.replace(re, '<span class="' + clue.cls + '">$1</span>');
+          }
+        }
+      });
+
+      document.getElementById('detective-sentence-display').innerHTML = displayHtml;
+    }
+
+    function renderDetectiveBadges() {
+      const container = document.getElementById('detective-clue-badges');
+      container.innerHTML = '';
+
+      CLUE_TYPES.forEach(clue => {
+        const badge = document.createElement('span');
+        const isSolved = solvedCluesForCurrentPhrase.has(clue.key);
+        const isActive = (currentClueTargetKey === clue.key && !isSolved);
+
+        badge.className = 'legend-item ' + clue.cls;
+        badge.style.opacity = isSolved ? '1' : (isActive ? '1' : '0.45');
+        badge.style.transform = isActive ? 'scale(1.08)' : 'scale(1)';
+        badge.style.transition = 'all 0.2s';
+        badge.style.cursor = 'default';
+        badge.innerHTML = clue.label + (isSolved ? ' ✅' : (isActive ? ' 👈' : ' ⏳'));
+
+        container.appendChild(badge);
+      });
+
+      // Update prompt
+      const promptEl = document.getElementById('detective-prompt');
+      if (solvedCluesForCurrentPhrase.size === 4) {
+        promptEl.innerHTML = '🎉 <span style="color:#27AE60;">Tous les indices trouvés ! Félicitations !</span>';
+      } else {
+        const activeClueInfo = CLUE_TYPES.find(c => c.key === currentClueTargetKey);
+        promptEl.innerHTML = `🎯 Trouve l'indice : <span class="${activeClueInfo.cls}">${activeClueInfo.label} (${activeClueInfo.desc})</span>`;
+      }
+    }
+
+    function renderDetectiveChoices() {
+      const container = document.getElementById('detective-choices-container');
+      container.innerHTML = '';
+
+      if (solvedCluesForCurrentPhrase.size === 4) {
+        return; // All 4 clues solved for this phrase
+      }
+
+      const phrase = ADVANCED_PHRASES[currentDetectivePhraseIndex];
+      const correctText = phrase[currentClueTargetKey];
+
+      // 1. Correct choice from this specific phrase
+      const choices = [
+        { isCorrect: true, text: correctText }
+      ];
+
+      // 2. Pick 3 distinct wrong choices (distractors) from the same grammar category from OTHER phrases
+      const otherPhrases = ADVANCED_PHRASES.filter((p, idx) => idx !== currentDetectivePhraseIndex);
+      const shuffledOthers = [...otherPhrases];
+      shuffleArray(shuffledOthers);
+
+      for (let i = 0; i < 3; i++) {
+        choices.push({
+          isCorrect: false,
+          text: shuffledOthers[i][currentClueTargetKey]
+        });
+      }
+
+      // 3. Shuffle all 4 choices
+      shuffleArray(choices);
+
+      const letters = ['A', 'B', 'C', 'D'];
+      choices.forEach((c, idx) => {
+        const card = document.createElement('div');
+        card.className = 'answer-card';
+        card.innerHTML = `<div class="answer-letter">${letters[idx]}</div><div class="answer-content">${c.text}</div>`;
+        card.onclick = () => handleDetectiveChoiceClick(card, c.isCorrect, c.text);
+        container.appendChild(card);
+      });
+    }
+
+    function handleDetectiveChoiceClick(card, isCorrect, chosenText) {
+      if (solvedCluesForCurrentPhrase.size === 4) return;
+      if (card.classList.contains('disabled')) return;
+
+      const fb = document.getElementById('detective-feedback');
+
+      if (isCorrect) {
+        // Correct clue from the sentence!
+        solvedCluesForCurrentPhrase.add(currentClueTargetKey);
+        card.classList.add('correct');
+        card.classList.add('disabled');
+
+        const activeClueInfo = CLUE_TYPES.find(c => c.key === currentClueTargetKey);
+        fb.textContent = `Bravo Lippe ! Tu as bien trouvé l'indice ${activeClueInfo.label} dans la phrase ! 🌟`;
+        fb.className = 'feedback-box correct';
+        fb.style.display = 'block';
+
+        document.getElementById('detective-clues-counter').textContent = `🔍 ${solvedCluesForCurrentPhrase.size} / 4 indices`;
+
+        renderDetectiveSentence();
+
+        // Check if all 4 are solved for this sentence
+        if (solvedCluesForCurrentPhrase.size === 4) {
+          launchConfetti();
+          fb.textContent = '🌟 Magnifique Lippe ! Tu as résolu tous les 4 indices de la phrase !';
+          document.getElementById('btn-next-detective').style.display = 'inline-flex';
+          renderDetectiveBadges();
+          const choicesCont = document.getElementById('detective-choices-container');
+          if (choicesCont) choicesCont.innerHTML = '';
+        } else {
+          // Advance target to next unsolved clue
+          const remainingClues = CLUE_TYPES.filter(c => !solvedCluesForCurrentPhrase.has(c.key));
+          if (remainingClues.length > 0) {
+            currentClueTargetKey = remainingClues[0].key;
+          }
+          // Brief smooth delay before loading next clue choices
+          setTimeout(() => {
+            renderDetectiveBadges();
+            renderDetectiveChoices();
+          }, 350);
+        }
+
+      } else {
+        // Incorrect choice: Card shakes gently, child must read carefully
+        card.classList.add('wrong');
+        card.classList.add('disabled');
+        const motivation = MOTIVATIONS[Math.floor(Math.random() * MOTIVATIONS.length)];
+        fb.textContent = motivation + " Regarde bien ce qui est écrit dans la phrase ! 🔍";
+        fb.className = 'feedback-box wrong';
+        fb.style.display = 'block';
+
+        setTimeout(() => {
+          card.classList.remove('wrong');
+        }, 500);
+      }
+    }
+
+    function nextDetectivePhrase() {
+      currentDetectivePhraseIndex++;
+      if (currentDetectivePhraseIndex < ADVANCED_PHRASES.length) {
+        loadDetectivePhrase(currentDetectivePhraseIndex);
+      } else {
+        showDetectiveVictory();
+      }
+    }
+
+    function showDetectiveVictory() {
+      document.getElementById('detective-play-area').style.display = 'none';
+      document.getElementById('detective-victory-area').style.display = 'block';
+      launchConfetti();
+    }
+
+    function restartDetective() {
+      currentDetectivePhraseIndex = 0;
+      loadDetectivePhrase(0);
+    }
+
+    function escapeRegExp(string) {
+      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+  </script>
+</body>
+</html>
