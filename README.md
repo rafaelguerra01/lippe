@@ -8,7 +8,7 @@ Jeu interactif de questions et réponses spécialement conçu et adapté pour le
 Chaque mot-clé interrogatif est mis en valeur avec une couleur et une bordure distinctive :
 * 🟢 **Qui** = **Vert** *(une personne ou un animal)*
 * 🟣 **Où / Ou** = **Violet** *(un lieu ou un endroit, avec ou sans accent)*
-* 🟤 **Quand** = **Marron** *(un moment ou un repère temporel)*
+* 🟤 **Quand** = **Brun** *(un moment ou un repère temporel)*
 * 🔴 **Pourquoi** = **Rouge** *(une explication / « Parce que... »)*
 
 ---
