@@ -805,10 +805,10 @@
       <div id="victory-area" class="victory-card">
         <div class="victory-icon">🏆 🌟 🎈</div>
         <h2>Incroyable, Lippe !</h2>
-        <p>Tu as réussi toutes les 10 questions avec brio ! Tu es un super champion de la lecture !</p>
+        <p>Tu as réussi toutes les 12 questions avec brio ! Tu es un super champion de la lecture !</p>
         <div style="margin-bottom: 24px;">
           <span class="score-badge" style="display: inline-flex; font-size: 22px; padding: 10px 24px;">
-            ⭐⭐⭐⭐⭐ 10 / 10 !
+            ⭐⭐⭐⭐⭐ 12 / 12 !
           </span>
         </div>
         <button class="btn-next" onclick="restartQuiz()">
@@ -1057,117 +1057,139 @@
 
   <script>
     /* =====================================================================
-       1. DATA DEFINITIONS (From lippe.jpg)
+       1. DATA DEFINITIONS (Le Grand Quiz — 12 Questions Plus Riches)
        ===================================================================== */
     const GAME_ITEMS = [
       {
         id: 1,
-        question: "Pourquoi veux-tu manger ?",
+        question: "Pourquoi Lippe met-il son gros manteau d'hiver ?",
         keyword: "pourquoi",
-        answer: "Parce que j'ai très faim.",
+        answer: "Parce qu'il neige beaucoup dehors et qu'il fait très froid.",
         distractors: [
-          "Dans la salle de bain",
-          "Hier soir, j'ai joué au soccer",
-          "Lippe lit un livre."
+          "Il accroche son gros manteau dans le placard de l'entrée.",
+          "Chaque matin à huit heures, avant de partir à l'école.",
+          "C'est son papa Rafael qui lui a donné son manteau."
         ]
       },
       {
         id: 2,
-        question: "Qui lit un livre ?",
+        question: "Qui conduit le grand autobus jaune jusqu'à l'école ?",
         keyword: "qui",
-        answer: "Lippe lit un livre.",
+        answer: "C'est le chauffeur souriant qui conduit les élèves.",
         distractors: [
-          "Ce matin, je bois un grand lait au chocolat",
-          "Parce que c'est mon anniversaire.",
-          "Dans la salle de bain"
+          "L'autobus jaune s'arrête devant la grille de l'école.",
+          "Tous les matins de la semaine à sept heures et demie.",
+          "Parce que l'école est trop loin pour y aller à pied."
         ]
       },
       {
         id: 3,
-        question: "Qui prépare le dîner ?",
-        keyword: "qui",
-        answer: "Maman prépare le dîner.",
+        question: "Où les pirates ont-ils caché le coffre rempli de pièces d'or ?",
+        keyword: "ou",
+        answer: "Au fond d'une grotte secrète derrière la grande cascade.",
         distractors: [
-          "Maman arrive aujourd'hui",
-          "Hier soir, j'ai joué au soccer",
-          "Parce que j'ai très faim."
+          "Le vieux capitaine à la barbe noire a caché le coffre.",
+          "Pour empêcher les autres marins de voler leur trésor.",
+          "Pendant une nuit sans lune, il y a très longtemps."
         ]
       },
       {
         id: 4,
-        question: "Pourquoi fais-tu une fête ?",
-        keyword: "pourquoi",
-        answer: "Parce que c'est mon anniversaire.",
+        question: "Quand les hiboux sortent-ils de leur nid pour chasser ?",
+        keyword: "quand",
+        answer: "Pendant la nuit, dès que la lune brille dans le ciel.",
         distractors: [
-          "Rafael c'est mon papa",
-          "Dans la salle de bain",
-          "Ce matin, je bois un grand lait au chocolat"
+          "Tout en haut des branches du vieux chêne de la forêt.",
+          "Car ils voient très bien dans le noir avec leurs grands yeux.",
+          "Les grands hiboux blancs de la forêt boréale."
         ]
       },
       {
         id: 5,
-        question: "Où est-ce que tu te laves les mains ?",
-        keyword: "ou",
-        answer: "Dans la salle de bain",
+        question: "Pourquoi le jardinier arrose-t-il les plantes du potager ?",
+        keyword: "pourquoi",
+        answer: "Pour aider les tomates et les fraises à bien pousser.",
         distractors: [
-          "Parce que j'ai très faim.",
-          "Hier soir, j'ai joué au soccer",
-          "Maman prépare le dîner."
+          "Au milieu du grand jardin derrière la maison.",
+          "Le jardinier arrose les fleurs à la fin de l'après-midi.",
+          "C'est grand-maman qui s'occupe des belles plantes."
         ]
       },
       {
         id: 6,
-        question: "Quand as-tu joué au soccer ?",
-        keyword: "quand",
-        answer: "Hier soir, j'ai joué au soccer",
+        question: "Où la famille installe-t-elle la grande tente de camping ?",
+        keyword: "ou",
+        answer: "Sur l'herbe verte, tout près du lac tranquille.",
         distractors: [
-          "Lippe lit un livre.",
-          "Rafael c'est mon papa",
-          "Parce que nous aimons voyager en été."
+          "Avant la tombée de la nuit, au début des vacances.",
+          "Parce qu'ils veulent dormir à la belle étoile en nature.",
+          "Rafael et Lippe montent la grande tente ensemble."
         ]
       },
       {
         id: 7,
-        question: "Quand maman arrive ?",
-        keyword: "quand",
-        answer: "Maman arrive aujourd'hui",
+        question: "Qui a soigné la patte blessée du petit chien ?",
+        keyword: "qui",
+        answer: "La vétérinaire douce a posé un bandage au petit chien.",
         distractors: [
-          "Maman prépare le dîner.",
-          "Dans la salle de bain",
-          "Parce que c'est mon anniversaire."
+          "Dans la clinique vétérinaire à côté du parc.",
+          "Hier après-midi, juste après sa promenade au parc.",
+          "Parce qu'il avait marché sur une petite épine pointue."
         ]
       },
       {
         id: 8,
-        question: "Quand tu bois du lait au chocolat ?",
+        question: "Quand Lippe ouvre-t-il ses cadeaux emballés ?",
         keyword: "quand",
-        answer: "Ce matin, je bois un grand lait au chocolat",
+        answer: "Après avoir soufflé toutes les bougies de son gâteau.",
         distractors: [
-          "Parce que j'ai très faim.",
-          "Hier soir, j'ai joué au soccer",
-          "Lippe lit un livre."
+          "Sur la grande table décorée au milieu du salon.",
+          "Ses meilleurs amis lui offrent de beaux cadeaux.",
+          "Parce que toute la famille célèbre son anniversaire."
         ]
       },
       {
         id: 9,
-        question: "Qui est ton papa ?",
-        keyword: "qui",
-        answer: "Rafael c'est mon papa",
+        question: "Pourquoi l'astronaute porte-t-il un casque spatial ?",
+        keyword: "pourquoi",
+        answer: "Car il a besoin d'oxygène pour respirer dans l'espace.",
         distractors: [
-          "Lippe lit un livre.",
-          "Maman arrive aujourd'hui",
-          "Dans la salle de bain"
+          "À l'intérieur de la station spatiale autour de la Terre.",
+          "Le commandant de la fusée porte un casque blanc.",
+          "Pendant toute sa sortie dans l'espace ce matin."
         ]
       },
       {
         id: 10,
-        question: "Pourquoi voyagez-vous en été ?",
-        keyword: "pourquoi",
-        answer: "Parce que nous aimons voyager en été.",
+        question: "Où l'écureuil roux garde-t-il ses provisions de noisettes ?",
+        keyword: "ou",
+        answer: "Dans le creux d'un grand arbre au milieu du bois.",
         distractors: [
-          "Hier soir, j'ai joué au soccer",
-          "Ce matin, je bois un grand lait au chocolat",
-          "Rafael c'est mon papa"
+          "À la fin de l'automne, avant la première neige.",
+          "Pour avoir assez de nourriture pendant tout l'hiver.",
+          "Le petit écureuil agile ramasse toutes les noisettes."
+        ]
+      },
+      {
+        id: 11,
+        question: "Qui a marqué le dernier but pendant la finale de soccer ?",
+        keyword: "qui",
+        answer: "Le capitaine de l'équipe bleue a marqué le but gagnant.",
+        distractors: [
+          "Sur le grand terrain de soccer du quartier.",
+          "À la toute dernière minute de la deuxième mi-temps.",
+          "Pour faire gagner la médaille d'or à son équipe."
+        ]
+      },
+      {
+        id: 12,
+        question: "Quand devons-nous allumer les phares de la voiture ?",
+        keyword: "quand",
+        answer: "Dès que le soleil se couche et qu'il commence à faire sombre.",
+        distractors: [
+          "Sur la longue autoroute qui traverse la montagne.",
+          "Pour bien voir la route et conduire en toute sécurité.",
+          "Le conducteur prudent allume toujours les phares."
         ]
       }
     ];
