@@ -230,8 +230,58 @@
     .tabs {
       display: flex;
       justify-content: center;
+      flex-wrap: wrap;
       gap: 12px;
       margin-bottom: 24px;
+    }
+
+    /* Gap Fill Styling for Au-dessus / Dessus */
+    .gap-slot {
+      display: inline-block;
+      min-width: 150px;
+      padding: 2px 16px;
+      margin: 0 6px;
+      border-bottom: 4px dashed #4A90E2;
+      background: #F0F7FF;
+      color: #2563EB;
+      border-radius: 12px;
+      font-weight: 800;
+      text-align: center;
+      transition: all 0.25s ease;
+    }
+
+    .gap-slot.filled-audessus {
+      border: 2px solid #0288D1;
+      background: #E1F5FE;
+      color: #01579B;
+      transform: scale(1.05);
+    }
+
+    .gap-slot.filled-dessus {
+      border: 2px solid #F57C00;
+      background: #FFF3E0;
+      color: #E65100;
+      transform: scale(1.05);
+    }
+
+    .rule-pill-audessus {
+      background: #E1F5FE;
+      border: 2px solid #81D4FA;
+      color: #01579B;
+      padding: 8px 14px;
+      border-radius: 14px;
+      font-size: calc(15px * var(--font-scale));
+      font-weight: 700;
+    }
+
+    .rule-pill-dessus {
+      background: #FFF3E0;
+      border: 2px solid #FFCC80;
+      color: #E65100;
+      padding: 8px 14px;
+      border-radius: 14px;
+      font-size: calc(15px * var(--font-scale));
+      font-weight: 700;
     }
 
     .tab-btn {
@@ -710,6 +760,7 @@
     <div class="tabs">
       <button class="tab-btn active" id="tab-quiz-btn" onclick="switchTab('quiz')">🎮 Le Grand Quiz</button>
       <button class="tab-btn" id="tab-detective-btn" onclick="switchTab('detective')">🕵️ Mode Détective (Avancé)</button>
+      <button class="tab-btn" id="tab-dessus-btn" onclick="switchTab('dessus')">⬆️ Au-dessus ou Dessus</button>
       <button class="tab-btn" id="tab-pairs-btn" onclick="switchTab('pairs')">🧩 Relier les Paires</button>
       <button class="tab-btn" id="tab-cheat-btn" onclick="switchTab('cheat')">💡 Aide-Mémoire Magique</button>
     </div>
@@ -844,6 +895,71 @@
         </button>
       </div>
 
+    </div>
+
+    <!-- TAB: AU-DESSUS OU DESSUS (COMPLÉTER LA PHRASE À TROU) -->
+    <div id="tab-dessus" class="game-card" style="display: none;">
+      <div id="dessus-play-area">
+        <div class="progress-section">
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="dessus-progress-fill" style="width: 8%;"></div>
+          </div>
+          <div class="score-badge" id="dessus-counter">Phrase 1 / 12</div>
+          <div class="score-badge" id="dessus-score">⭐ 0 / 12</div>
+          <button class="btn-tool" onclick="restartDessusMode()" style="font-weight: 700; background: #FFF8E1; border-color: #FFE082; color: #9A6700;" title="Recommencer depuis le début">🔄 Recommencer</button>
+        </div>
+
+        <!-- Visual Rule Helper Banner -->
+        <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px;">
+          <div class="rule-pill-audessus">
+            🌤️ <strong>au-dessus</strong> + <em>de / du / de la / des</em> + un nom (plus haut, sans toucher)
+          </div>
+          <div class="rule-pill-dessus">
+            📦 <strong>dessus</strong> (tout seul, posé sur l'objet déjà nommé)
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 8px;">
+          <span style="font-size: 14px; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 0.1em;">
+            ✏️ Choisis le bon mot pour remplir le trou dans la phrase :
+          </span>
+        </div>
+
+        <!-- Gap-Fill Sentence Display Box -->
+        <div class="question-box" style="background: #FFFFFF; border: 3px solid #CBD5E1; padding: 26px; min-height: 110px;">
+          <div id="dessus-sentence-display" style="font-size: calc(23px * var(--font-scale)); font-weight: 700; color: #1E293B; line-height: 2.1;">
+            Chargement...
+          </div>
+        </div>
+
+        <!-- Option Cards (au-dessus vs dessus) -->
+        <div class="answers-grid" id="dessus-choices-container" style="margin-top: 18px;">
+          <!-- Generated dynamically -->
+        </div>
+
+        <div class="feedback-box" id="dessus-feedback"></div>
+
+        <div style="text-align: center;">
+          <button class="btn-next" id="btn-next-dessus" style="display: none;" onclick="nextDessusQuestion()">
+            Phrase suivante ➜
+          </button>
+        </div>
+      </div>
+
+      <!-- Victory Screen for Au-dessus / Dessus -->
+      <div id="dessus-victory-area" class="victory-card">
+        <div class="victory-icon">🌤️ 📦 🏆</div>
+        <h2>Bravo Lippe, Champion de « au-dessus » et « dessus » !</h2>
+        <p>Tu as complété toutes les 12 phrases à trou sans hésiter !</p>
+        <div style="margin-bottom: 24px;">
+          <span class="score-badge" style="display: inline-flex; font-size: 22px; padding: 10px 24px;">
+            ⭐⭐⭐⭐⭐ 12 / 12 Phrases Complétées !
+          </span>
+        </div>
+        <button class="btn-next" onclick="restartDessusMode()">
+          🔄 Rejouer avec les phrases mélangées !
+        </button>
+      </div>
     </div>
 
 <!-- TAB 2: RELIER LES PAIRES (MATCHING GAME) -->
@@ -1330,11 +1446,13 @@
     function switchTab(tabName) {
       document.getElementById('tab-quiz').style.display = tabName === 'quiz' ? 'block' : 'none';
       document.getElementById('tab-detective').style.display = tabName === 'detective' ? 'block' : 'none';
+      document.getElementById('tab-dessus').style.display = tabName === 'dessus' ? 'block' : 'none';
       document.getElementById('tab-pairs').style.display = tabName === 'pairs' ? 'block' : 'none';
       document.getElementById('tab-cheat').style.display = tabName === 'cheat' ? 'block' : 'none';
 
       document.getElementById('tab-quiz-btn').classList.toggle('active', tabName === 'quiz');
       document.getElementById('tab-detective-btn').classList.toggle('active', tabName === 'detective');
+      document.getElementById('tab-dessus-btn').classList.toggle('active', tabName === 'dessus');
       document.getElementById('tab-pairs-btn').classList.toggle('active', tabName === 'pairs');
       document.getElementById('tab-cheat-btn').classList.toggle('active', tabName === 'cheat');
 
@@ -1342,6 +1460,8 @@
         initPairsMode();
       } else if (tabName === 'detective') {
         initDetectiveMode();
+      } else if (tabName === 'dessus') {
+        initDessusMode();
       }
     }
 
@@ -1468,83 +1588,83 @@
     const LEVEL1_PHRASES = [
       {
         id: 1,
-        fullText: "Paul mange une pomme au parc parce qu'il a faim aujourd'hui.",
-        qui: "Paul",
-        ou: "au parc",
-        quand: "aujourd'hui",
-        pourquoi: "parce qu'il a faim"
+        fullText: "Ce matin, le jardinier arrose les tomates dans le potager parce que la terre est sèche.",
+        qui: "le jardinier",
+        ou: "dans le potager",
+        quand: "Ce matin",
+        pourquoi: "parce que la terre est sèche"
       },
       {
         id: 2,
-        fullText: "Ce matin, Lippe lit une bande dessinée dans sa chambre parce qu'il adore les histoires.",
-        qui: "Lippe",
-        ou: "dans sa chambre",
-        quand: "Ce matin",
-        pourquoi: "parce qu'il adore les histoires"
+        fullText: "La petite tortue nage doucement dans l'aquarium après son repas parce qu'elle est calme.",
+        qui: "La petite tortue",
+        ou: "dans l'aquarium",
+        quand: "après son repas",
+        pourquoi: "parce qu'elle est calme"
       },
       {
         id: 3,
-        fullText: "Hier soir, Rafael prépare une bonne pizza dans la cuisine parce que toute la famille a faim.",
-        qui: "Rafael",
-        ou: "dans la cuisine",
-        quand: "Hier soir",
-        pourquoi: "parce que toute la famille a faim"
+        fullText: "Pendant la récréation, Lucas partage son biscuit sur le banc parce que son ami a faim.",
+        qui: "Lucas",
+        ou: "sur le banc",
+        quand: "Pendant la récréation",
+        pourquoi: "parce que son ami a faim"
       },
       {
         id: 4,
-        fullText: "Maman plante de jolies fleurs dans le jardin cet après-midi parce que le soleil brille.",
-        qui: "Maman",
-        ou: "dans le jardin",
-        quand: "cet après-midi",
-        pourquoi: "parce que le soleil brille"
+        fullText: "Le boulanger prépare des croissants chauds dans le four très tôt le matin pour les clients.",
+        qui: "Le boulanger",
+        ou: "dans le four",
+        quand: "très tôt le matin",
+        pourquoi: "pour les clients"
       },
       {
         id: 5,
-        fullText: "Le samedi matin, les enfants jouent au soccer sur le terrain parce qu'ils veulent gagner le match.",
-        qui: "les enfants",
-        ou: "sur le terrain",
-        quand: "Le samedi matin",
-        pourquoi: "parce qu'ils veulent gagner le match"
+        fullText: "Dimanche après-midi, grand-papa raconte une histoire amusante sur le balcon parce qu'il fait beau.",
+        qui: "grand-papa",
+        ou: "sur le balcon",
+        quand: "Dimanche après-midi",
+        pourquoi: "parce qu'il fait beau"
       },
       {
         id: 6,
-        fullText: "Le petit chien dort sous la table à midi parce qu'il est très fatigué.",
-        qui: "Le petit chien",
-        ou: "sous la table",
-        quand: "à midi",
-        pourquoi: "parce qu'il est très fatigué"
+        fullText: "Le chaton gris grimpe sur le coussin du salon chaque soir car il cherche un endroit doux.",
+        qui: "Le chaton gris",
+        ou: "sur le coussin du salon",
+        quand: "chaque soir",
+        pourquoi: "car il cherche un endroit doux"
       },
       {
         id: 7,
-        fullText: "Le lundi, l'enseignante écrit au tableau dans la classe parce qu'elle explique la leçon.",
-        qui: "L'enseignante",
-        ou: "dans la classe",
-        quand: "Le lundi",
-        pourquoi: "parce qu'elle explique la leçon"
+        fullText: "À l'heure du midi, le cuisinier coupe des légumes frais sur la planche pour préparer une soupe.",
+        qui: "le cuisinier",
+        ou: "sur la planche",
+        quand: "À l'heure du midi",
+        pourquoi: "pour préparer une soupe"
       },
       {
         id: 8,
-        fullText: "Pendant l'été, la famille se baigne dans le lac parce qu'il fait très chaud.",
-        qui: "la famille",
-        ou: "dans le lac",
-        quand: "Pendant l'été",
-        pourquoi: "parce qu'il fait très chaud"
+        fullText: "Ma cousine Clara dessine un grand château sur une feuille blanche aujourd'hui parce qu'elle aime la peinture.",
+        qui: "Ma cousine Clara",
+        ou: "sur une feuille blanche",
+        quand: "aujourd'hui",
+        pourquoi: "parce qu'elle aime la peinture"
       },
       {
         id: 9,
-        fullText: "Sophie souffle ses bougies dans le salon ce soir parce que c'est sa fête.",
-        qui: "Sophie",
-        ou: "dans le salon",
-        quand: "ce soir",
-        pourquoi: "parce que c'est sa fête"
+        fullText: "En hiver, les écureuils cachent des noisettes dans le grand chêne car la neige arrive bientôt.",
+        qui: "les écureuils",
+        ou: "dans le grand chêne",
+        quand: "En hiver",
+        pourquoi: "car la neige arrive bientôt"
       },
       {
         id: 10,
-        fullText: "L'astronaute observe les étoiles dans sa fusée la nuit parce qu'il fait une mission spatiale.",
-        qui: "L'astronaute",
-        ou: "dans sa fusée",
-        quand: "la nuit",
-        pourquoi: "parce qu'il fait une mission spatiale"
+        fullText: "Avant de dormir, Lippe range ses jouets préférés dans le coffre bleu pour garder sa chambre propre.",
+        qui: "Lippe",
+        ou: "dans le coffre bleu",
+        quand: "Avant de dormir",
+        pourquoi: "pour garder sa chambre propre"
       }
     ];
 
@@ -1910,6 +2030,220 @@
 
     function escapeRegExp(string) {
       return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    /* =====================================================================
+       9. AU-DESSUS OU DESSUS (PHRASES À TROU / GAP-FILL MODE)
+       ===================================================================== */
+    const DESSUS_ITEMS = [
+      {
+        id: 1,
+        before: "L'avion vole très haut",
+        after: "des nuages blancs.",
+        answer: "au-dessus",
+        explanation: "On écrit « au-dessus » car il y a « des nuages blancs » juste après, et l'avion vole plus haut sans les toucher ! 🌤️"
+      },
+      {
+        id: 2,
+        before: "Voici la grande table de la cuisine : tu peux poser ton sac",
+        after: ".",
+        answer: "dessus",
+        explanation: "On écrit « dessus » car la table est déjà nommée avant, le mot est tout seul à la fin et le sac est posé sur la table ! 📦"
+      },
+      {
+        id: 3,
+        before: "Une jolie lampe brille",
+        after: "de la table de la salle à manger.",
+        answer: "au-dessus",
+        explanation: "On écrit « au-dessus » car il y a « de la table » juste après, et la lampe est suspendue plus haut ! 🌤️"
+      },
+      {
+        id: 4,
+        before: "Le gros coussin bleu est très doux, alors le petit chat dort",
+        after: ".",
+        answer: "dessus",
+        explanation: "On écrit « dessus » car le chat est couché directement sur le coussin déjà nommé, sans autre nom après ! 📦"
+      },
+      {
+        id: 5,
+        before: "Un bel arc-en-ciel multicolore apparaît",
+        after: "de la forêt après la pluie.",
+        answer: "au-dessus",
+        explanation: "On écrit « au-dessus » car il y a « de la forêt » juste après, dans le ciel ! 🌤️"
+      },
+      {
+        id: 6,
+        before: "Lippe prend une tranche de pain chaud et étale du beurre",
+        after: ".",
+        answer: "dessus",
+        explanation: "On écrit « dessus » car Lippe met le beurre directement sur la tranche de pain déjà nommée ! 📦"
+      },
+      {
+        id: 7,
+        before: "Les oiseaux migrateurs passent",
+        after: "du toit de l'école.",
+        answer: "au-dessus",
+        explanation: "On écrit « au-dessus » car il y a « du toit de l'école » juste après, et les oiseaux volent dans le ciel ! 🌤️"
+      },
+      {
+        id: 8,
+        before: "Attention, ce banc vient d'être peint : ne t'assieds pas",
+        after: "!",
+        answer: "dessus",
+        explanation: "On écrit « dessus » car on parle du banc déjà nommé et le mot est tout seul à la fin ! 📦"
+      },
+      {
+        id: 9,
+        before: "Le drone de papa survole le jardin et reste",
+        after: "des grands arbres.",
+        answer: "au-dessus",
+        explanation: "On écrit « au-dessus » car il y a « des grands arbres » juste après ! 🌤️"
+      },
+      {
+        id: 10,
+        before: "Maman sort le gâteau au chocolat et ajoute des fraises sucrées",
+        after: ".",
+        answer: "dessus",
+        explanation: "On écrit « dessus » car les fraises sont posées directement sur le gâteau déjà nommé ! 📦"
+      },
+      {
+        id: 11,
+        before: "Dans sa chambre, Lippe a collé une affiche d'astronaute",
+        after: "de son lit.",
+        answer: "au-dessus",
+        explanation: "On écrit « au-dessus » car il y a « de son lit » juste après, plus haut sur le mur ! 🌤️"
+      },
+      {
+        id: 12,
+        before: "La boîte en carton est trop fragile : ne monte surtout pas",
+        after: "!",
+        answer: "dessus",
+        explanation: "On écrit « dessus » car on parle de la boîte déjà nommée, sans autre nom après ! 📦"
+      }
+    ];
+
+    let dessusOrder = [];
+    let currentDessusIndex = 0;
+    let dessusStars = 0;
+    let dessusAnswered = false;
+
+    function initDessusMode() {
+      dessusOrder = [...DESSUS_ITEMS];
+      shuffleArray(dessusOrder);
+      currentDessusIndex = 0;
+      dessusStars = 0;
+      document.getElementById('dessus-play-area').style.display = 'block';
+      document.getElementById('dessus-victory-area').style.display = 'none';
+      loadDessusQuestion(0);
+    }
+
+    function restartDessusMode() {
+      initDessusMode();
+    }
+
+    function loadDessusQuestion(index) {
+      dessusAnswered = false;
+      currentDessusIndex = index;
+      const item = dessusOrder[index];
+
+      const percent = ((index + 1) / dessusOrder.length) * 100;
+      document.getElementById('dessus-progress-fill').style.width = percent + '%';
+      document.getElementById('dessus-counter').textContent = `Phrase ${index + 1} / ${dessusOrder.length}`;
+      document.getElementById('dessus-score').textContent = `⭐ ${dessusStars} / ${dessusOrder.length}`;
+
+      // Render sentence with visual gap slot
+      const spaceBeforeAfter = (item.after.startsWith('.') || item.after.startsWith(',')) ? '' : ' ';
+      document.getElementById('dessus-sentence-display').innerHTML =
+        `${item.before} <span id="active-gap-slot" class="gap-slot">❓ ______</span>${spaceBeforeAfter}${item.after}`;
+
+      // Hide feedback and next button
+      const fb = document.getElementById('dessus-feedback');
+      fb.className = 'feedback-box';
+      fb.style.display = 'none';
+      document.getElementById('btn-next-dessus').style.display = 'none';
+
+      // Render the 2 option cards
+      const container = document.getElementById('dessus-choices-container');
+      container.innerHTML = '';
+
+      const options = [
+        {
+          value: 'au-dessus',
+          label: 'au-dessus',
+          hint: '🌤️ plus haut (suivi de : de / du / de la / des...)'
+        },
+        {
+          value: 'dessus',
+          label: 'dessus',
+          hint: '📦 posé sur l\'objet (tout seul, sans « de » après)'
+        }
+      ];
+
+      const letters = ['A', 'B'];
+      options.forEach((opt, i) => {
+        const card = document.createElement('div');
+        card.className = 'answer-card';
+        card.innerHTML = `
+          <div class="answer-letter">${letters[i]}</div>
+          <div class="answer-content">
+            <div style="font-size: calc(22px * var(--font-scale)); font-weight: 800;">${opt.label}</div>
+            <div style="font-size: calc(14px * var(--font-scale)); color: #64748B; font-weight: 600; margin-top: 2px;">${opt.hint}</div>
+          </div>
+        `;
+        card.onclick = () => handleDessusChoice(card, opt.value, item);
+        container.appendChild(card);
+      });
+    }
+
+    function handleDessusChoice(card, selectedValue, item) {
+      if (dessusAnswered) return;
+      if (card.classList.contains('disabled')) return;
+
+      const fb = document.getElementById('dessus-feedback');
+      const gapSlot = document.getElementById('active-gap-slot');
+
+      if (selectedValue === item.answer) {
+        dessusAnswered = true;
+        dessusStars++;
+        document.getElementById('dessus-score').textContent = `⭐ ${dessusStars} / ${dessusOrder.length}`;
+        card.classList.add('correct');
+
+        // Fill the gap inside the sentence visually!
+        if (gapSlot) {
+          gapSlot.textContent = item.answer;
+          gapSlot.className = 'gap-slot ' + (item.answer === 'au-dessus' ? 'filled-audessus' : 'filled-dessus');
+        }
+
+        const compliment = COMPLIMENTS[Math.floor(Math.random() * COMPLIMENTS.length)];
+        fb.innerHTML = `<div>${compliment}</div><div style="margin-top:6px; font-weight:600; font-size: calc(16px * var(--font-scale));">${item.explanation}</div>`;
+        fb.className = 'feedback-box correct';
+        fb.style.display = 'block';
+
+        launchConfetti();
+        document.getElementById('btn-next-dessus').style.display = 'inline-flex';
+      } else {
+        card.classList.add('wrong');
+        card.classList.add('disabled');
+
+        const motivation = MOTIVATIONS[Math.floor(Math.random() * MOTIVATIONS.length)];
+        const tip = (item.answer === 'au-dessus')
+          ? "Astuce : Regarde juste après le trou, il y a un petit mot (« de / du / de la / des ») suivi d'un nom ! 🔍"
+          : "Astuce : Le trou est tout seul à la fin de la phrase et l'objet a déjà été nommé avant ! 🔍";
+        fb.innerHTML = `<div>${motivation}</div><div style="margin-top:6px; font-weight:600; font-size: calc(16px * var(--font-scale));">${tip}</div>`;
+        fb.className = 'feedback-box wrong';
+        fb.style.display = 'block';
+      }
+    }
+
+    function nextDessusQuestion() {
+      currentDessusIndex++;
+      if (currentDessusIndex < dessusOrder.length) {
+        loadDessusQuestion(currentDessusIndex);
+      } else {
+        document.getElementById('dessus-play-area').style.display = 'none';
+        document.getElementById('dessus-victory-area').style.display = 'block';
+        launchConfetti();
+      }
     }
 
   </script>
