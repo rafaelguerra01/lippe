@@ -767,22 +767,32 @@
 
     </div>
 
-        <!-- TAB: MODE DÉTECTIVE (NIVEAU AVANCÉ) -->
+        <!-- TAB: MODE DÉTECTIVE (NIVEAU AVANCÉ & EXPERT) -->
     <div id="tab-detective" class="game-card" style="display: none;">
       
+      <!-- Level Selector -->
+      <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;">
+        <button id="btn-level-1" class="btn-tool" onclick="setDetectiveLevel(1)" style="font-size: 16px; padding: 8px 18px; border-radius: 14px;">
+          🌱 Niveau 1 : Détective Junior (10 phrases)
+        </button>
+        <button id="btn-level-2" class="btn-tool active" onclick="setDetectiveLevel(2)" style="font-size: 16px; padding: 8px 18px; border-radius: 14px;">
+          🚀 Niveau 2 : Super Détective Expert (12 phrases complexes)
+        </button>
+      </div>
+
       <div id="detective-play-area">
         <div class="progress-section">
           <div class="progress-bar-container">
             <div class="progress-bar-fill" id="detective-progress-fill" style="width: 10%;"></div>
           </div>
-          <div class="score-badge" id="detective-phrase-counter">Phrase 1 / 10</div>
+          <div class="score-badge" id="detective-phrase-counter">Phrase 1 / 12</div>
           <div class="score-badge" id="detective-clues-counter">🔍 0 / 4 indices</div>
           <button class="btn-tool" onclick="restartDetective()" style="font-weight: 700; background: #FFF8E1; border-color: #FFE082; color: #9A6700;" title="Recommencer depuis la première phrase">🔄 Recommencer</button>
         </div>
 
         <div style="text-align: center; margin-bottom: 8px;">
-          <span style="font-size: 14px; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 0.1em;">
-            📖 Lis attentivement la grande phrase :
+          <span id="detective-level-banner" style="font-size: 14px; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 0.1em;">
+            📖 Niveau Expert — Lis attentivement la grande phrase complexe :
           </span>
         </div>
 
@@ -823,10 +833,10 @@
       <div id="detective-victory-area" class="victory-card">
         <div class="victory-icon">🕵️‍♂️ 🏆 ⭐</div>
         <h2>Incroyable, Super Détective Lippe !</h2>
-        <p>Tu as analysé avec succès les 10 grandes phrases et trouvé tous les indices Qui, Où, Quand et Pourquoi !</p>
+        <p id="detective-victory-text">Tu as analysé avec succès toutes les grandes phrases et trouvé tous les indices Qui, Où, Quand et Pourquoi !</p>
         <div style="margin-bottom: 24px;">
-          <span class="score-badge" style="display: inline-flex; font-size: 22px; padding: 10px 24px;">
-            ⭐⭐⭐⭐⭐ 10 / 10 Enquêtes Réussies !
+          <span class="score-badge" id="detective-victory-badge" style="display: inline-flex; font-size: 22px; padding: 10px 24px;">
+            ⭐⭐⭐⭐⭐ 12 / 12 Enquêtes Réussies !
           </span>
         </div>
         <button class="btn-next" onclick="restartDetective()">
@@ -915,12 +925,12 @@
             <span>❓</span> Pourquoi (Rouge)
           </div>
           <div class="cheat-desc">
-            On utilise <strong>Pourquoi</strong> pour demander une <strong>raison</strong>. La réponse commence presque toujours par <strong>« Parce que... »</strong>.
+            On utilise <strong>Pourquoi</strong> pour demander une <strong>raison</strong> ou un <strong>but</strong>. La réponse commence souvent par <strong>« Parce que... »</strong>, <strong>« Car... »</strong> ou <strong>« Pour... »</strong>.
           </div>
           <ul class="cheat-examples">
             <li>👉 <strong>Pourquoi veux-tu manger ?</strong> ➔ Parce que j'ai très faim.</li>
-            <li>👉 <strong>Pourquoi fais-tu une fête ?</strong> ➔ Parce que c'est mon anniversaire.</li>
-            <li>👉 <strong>Pourquoi voyagez-vous en été ?</strong> ➔ Parce que nous aimons voyager.</li>
+            <li>👉 <strong>Pourquoi s'entraînent-ils ?</strong> ➔ Pour remporter la coupe.</li>
+            <li>👉 <strong>Pourquoi se cache-t-il ?</strong> ➔ Car le vent souffle fort.</li>
           </ul>
         </div>
 
@@ -1453,9 +1463,9 @@
     });
   
     /* =====================================================================
-       8. ADVANCED SENTENCE DETECTIVE DATA & LOGIC (10 Phrases)
+       8. ADVANCED & EXPERT SENTENCE DETECTIVE DATA & LOGIC
        ===================================================================== */
-    const ADVANCED_PHRASES = [
+    const LEVEL1_PHRASES = [
       {
         id: 1,
         fullText: "Paul mange une pomme au parc parce qu'il a faim aujourd'hui.",
@@ -1538,16 +1548,132 @@
       }
     ];
 
-    const CLUE_TYPES = [
-      { key: 'qui', label: '👤 Qui ?', desc: "La personne ou l'animal", cls: 'kw-qui' },
-      { key: 'ou', label: '🏠 Où ?', desc: "L'endroit ou le lieu", cls: 'kw-ou' },
-      { key: 'quand', label: '⏰ Quand ?', desc: "Le moment ou le jour", cls: 'kw-quand' },
-      { key: 'pourquoi', label: '❓ Pourquoi ?', desc: "La raison (« Parce que »)", cls: 'kw-pourquoi' }
+    const LEVEL2_PHRASES = [
+      {
+        id: 1,
+        fullText: "Après la classe, Lippe et son meilleur ami construisent une grande cabane au fond du jardin pour cacher leurs trésors.",
+        qui: "Lippe et son meilleur ami",
+        ou: "au fond du jardin",
+        quand: "Après la classe",
+        pourquoi: "pour cacher leurs trésors"
+      },
+      {
+        id: 2,
+        fullText: "Le jeune magicien répète ses tours de cartes sur la grande scène du théâtre avant le spectacle parce qu'il veut surprendre le public.",
+        qui: "Le jeune magicien",
+        ou: "sur la grande scène du théâtre",
+        quand: "avant le spectacle",
+        pourquoi: "parce qu'il veut surprendre le public"
+      },
+      {
+        id: 3,
+        fullText: "Pendant la tempête de neige, le petit renard blanc se cache dans son terrier souterrain car le vent souffle très fort.",
+        qui: "le petit renard blanc",
+        ou: "dans son terrier souterrain",
+        quand: "Pendant la tempête de neige",
+        pourquoi: "car le vent souffle très fort"
+      },
+      {
+        id: 4,
+        fullText: "Tous les mercredis après-midi, l'équipe de soccer s'entraîne au stade municipal pour remporter la coupe des champions.",
+        qui: "l'équipe de soccer",
+        ou: "au stade municipal",
+        quand: "Tous les mercredis après-midi",
+        pourquoi: "pour remporter la coupe des champions"
+      },
+      {
+        id: 5,
+        fullText: "Au lever du soleil, le capitaine du navire regarde l'horizon avec ses jumelles sur le pont du bateau parce qu'il cherche une île mystérieuse.",
+        qui: "le capitaine du navire",
+        ou: "sur le pont du bateau",
+        quand: "Au lever du soleil",
+        pourquoi: "parce qu'il cherche une île mystérieuse"
+      },
+      {
+        id: 6,
+        fullText: "Les élèves de la classe lisent des livres d'aventure en silence dans la bibliothèque municipale cet après-midi car ils préparent un projet.",
+        qui: "Les élèves de la classe",
+        ou: "dans la bibliothèque municipale",
+        quand: "cet après-midi",
+        pourquoi: "car ils préparent un projet"
+      },
+      {
+        id: 7,
+        fullText: "Avant le souper, Rafael et Lippe préparent des crêpes chaudes dans la cuisine pour faire une belle surprise à maman.",
+        qui: "Rafael et Lippe",
+        ou: "dans la cuisine",
+        quand: "Avant le souper",
+        pourquoi: "pour faire une belle surprise à maman"
+      },
+      {
+        id: 8,
+        fullText: "La scientifique observe les planètes lointaines au sommet de la montagne pendant toute la nuit parce que le ciel est très clair.",
+        qui: "La scientifique",
+        ou: "au sommet de la montagne",
+        quand: "pendant toute la nuit",
+        pourquoi: "parce que le ciel est très clair"
+      },
+      {
+        id: 9,
+        fullText: "Dès le début de la récréation, les enfants joyeux courent dans la cour de l'école pour jouer à la cachette.",
+        qui: "les enfants joyeux",
+        ou: "dans la cour de l'école",
+        quand: "Dès le début de la récréation",
+        pourquoi: "pour jouer à la cachette"
+      },
+      {
+        id: 10,
+        fullText: "Le pompier courageux grimpe tout en haut de la grande échelle devant l'immeuble ce matin parce qu'un petit chat est coincé.",
+        qui: "Le pompier courageux",
+        ou: "tout en haut de la grande échelle devant l'immeuble",
+        quand: "ce matin",
+        pourquoi: "parce qu'un petit chat est coincé"
+      },
+      {
+        id: 11,
+        fullText: "À la tombée de la nuit, les campeurs allument un grand feu de camp près de la rivière car l'air devient frais.",
+        qui: "les campeurs",
+        ou: "près de la rivière",
+        quand: "À la tombée de la nuit",
+        pourquoi: "car l'air devient frais"
+      },
+      {
+        id: 12,
+        fullText: "Le robot intelligent répare les panneaux solaires autour de la station spatiale chaque matin pour produire de l'électricité.",
+        qui: "Le robot intelligent",
+        ou: "autour de la station spatiale",
+        quand: "chaque matin",
+        pourquoi: "pour produire de l'électricité"
+      }
     ];
 
+    const CLUE_TYPES = [
+      { key: 'qui', label: '👤 Qui ?', desc: "La personne ou le personnage", cls: 'kw-qui' },
+      { key: 'ou', label: '🏠 Où ?', desc: "L'endroit ou le lieu", cls: 'kw-ou' },
+      { key: 'quand', label: '⏰ Quand ?', desc: "Le moment ou le jour", cls: 'kw-quand' },
+      { key: 'pourquoi', label: '❓ Pourquoi ?', desc: "La raison (« Parce que / Car / Pour »)", cls: 'kw-pourquoi' }
+    ];
+
+    let currentDetectiveLevel = 2; // Default to Level 2 (Expert)
+    let ADVANCED_PHRASES = LEVEL2_PHRASES;
     let currentDetectivePhraseIndex = 0;
     let solvedCluesForCurrentPhrase = new Set();
+    let currentClueOrder = ['qui', 'ou', 'quand', 'pourquoi'];
     let currentClueTargetKey = 'qui';
+
+    function setDetectiveLevel(level) {
+      currentDetectiveLevel = level;
+      ADVANCED_PHRASES = (level === 1) ? LEVEL1_PHRASES : LEVEL2_PHRASES;
+      document.getElementById('btn-level-1').classList.toggle('active', level === 1);
+      document.getElementById('btn-level-2').classList.toggle('active', level === 2);
+      const bannerEl = document.getElementById('detective-level-banner');
+      if (bannerEl) {
+        bannerEl.textContent = (level === 1)
+          ? '📖 Niveau 1 (Junior) — Lis attentivement la phrase :'
+          : '📖 Niveau 2 (Expert) — Lis attentivement la grande phrase complexe :';
+      }
+      initDetectiveMode();
+    }
 
     function initDetectiveMode() {
       currentDetectivePhraseIndex = 0;
@@ -1557,7 +1683,13 @@
     function loadDetectivePhrase(index) {
       currentDetectivePhraseIndex = index;
       solvedCluesForCurrentPhrase.clear();
-      currentClueTargetKey = 'qui';
+
+      // In Level 2, randomize the order in which clues are asked so it is not predictable
+      currentClueOrder = ['qui', 'ou', 'quand', 'pourquoi'];
+      if (currentDetectiveLevel === 2) {
+        shuffleArray(currentClueOrder);
+      }
+      currentClueTargetKey = currentClueOrder[0];
 
       document.getElementById('detective-play-area').style.display = 'block';
       document.getElementById('detective-victory-area').style.display = 'none';
@@ -1642,20 +1774,42 @@
       const choices = [
         { isCorrect: true, text: correctText }
       ];
+      const usedTexts = new Set([correctText]);
 
-      // 2. Pick 3 distinct wrong choices (distractors) from the same grammar category from OTHER phrases
+      // 2. In Level 2 (Expert), include unsolved parts from the SAME sentence as distractors
+      // so Lippe must truly distinguish Qui vs Où vs Quand vs Pourquoi within the sentence!
+      if (currentDetectiveLevel === 2) {
+        const sameSentenceOtherKeys = CLUE_TYPES
+          .map(c => c.key)
+          .filter(k => k !== currentClueTargetKey && !solvedCluesForCurrentPhrase.has(k));
+        shuffleArray(sameSentenceOtherKeys);
+        for (const k of sameSentenceOtherKeys) {
+          if (choices.length >= 3) break;
+          const distractorText = phrase[k];
+          if (distractorText && !usedTexts.has(distractorText)) {
+            choices.push({ isCorrect: false, text: distractorText });
+            usedTexts.add(distractorText);
+          }
+        }
+      }
+
+      // 3. Fill remaining slots up to 4 choices from the same grammar category of OTHER phrases
       const otherPhrases = ADVANCED_PHRASES.filter((p, idx) => idx !== currentDetectivePhraseIndex);
       const shuffledOthers = [...otherPhrases];
       shuffleArray(shuffledOthers);
 
-      for (let i = 0; i < 3; i++) {
-        choices.push({
-          isCorrect: false,
-          text: shuffledOthers[i][currentClueTargetKey]
-        });
+      for (let i = 0; i < shuffledOthers.length && choices.length < 4; i++) {
+        const distractorText = shuffledOthers[i][currentClueTargetKey];
+        if (distractorText && !usedTexts.has(distractorText)) {
+          choices.push({
+            isCorrect: false,
+            text: distractorText
+          });
+          usedTexts.add(distractorText);
+        }
       }
 
-      // 3. Shuffle all 4 choices
+      // 4. Shuffle all 4 choices
       shuffleArray(choices);
 
       const letters = ['A', 'B', 'C', 'D'];
@@ -1698,10 +1852,10 @@
           const choicesCont = document.getElementById('detective-choices-container');
           if (choicesCont) choicesCont.innerHTML = '';
         } else {
-          // Advance target to next unsolved clue
-          const remainingClues = CLUE_TYPES.filter(c => !solvedCluesForCurrentPhrase.has(c.key));
-          if (remainingClues.length > 0) {
-            currentClueTargetKey = remainingClues[0].key;
+          // Advance target to next unsolved clue in currentClueOrder
+          const remainingKeys = currentClueOrder.filter(k => !solvedCluesForCurrentPhrase.has(k));
+          if (remainingKeys.length > 0) {
+            currentClueTargetKey = remainingKeys[0];
           }
           // Brief smooth delay before loading next clue choices
           setTimeout(() => {
@@ -1715,7 +1869,7 @@
         card.classList.add('wrong');
         card.classList.add('disabled');
         const motivation = MOTIVATIONS[Math.floor(Math.random() * MOTIVATIONS.length)];
-        fb.textContent = motivation + " Regarde bien ce qui est écrit dans la phrase ! 🔍";
+        fb.textContent = motivation + " Regarde bien la question (Qui, Où, Quand ou Pourquoi) ! 🔍";
         fb.className = 'feedback-box wrong';
         fb.style.display = 'block';
 
@@ -1737,6 +1891,15 @@
     function showDetectiveVictory() {
       document.getElementById('detective-play-area').style.display = 'none';
       document.getElementById('detective-victory-area').style.display = 'block';
+      const total = ADVANCED_PHRASES.length;
+      const vicText = document.getElementById('detective-victory-text');
+      const vicBadge = document.getElementById('detective-victory-badge');
+      if (vicText) {
+        vicText.textContent = `Tu as analysé avec succès les ${total} grandes phrases et trouvé tous les indices Qui, Où, Quand et Pourquoi !`;
+      }
+      if (vicBadge) {
+        vicBadge.textContent = `⭐⭐⭐⭐⭐ ${total} / ${total} Enquêtes Réussies !`;
+      }
       launchConfetti();
     }
 
