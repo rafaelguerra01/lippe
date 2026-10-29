@@ -859,11 +859,14 @@
           <!-- Badges generated dynamically -->
         </div>
 
-        <!-- Current Clue Prompt -->
+        <!-- Current Clue Prompt & Text-Related Question -->
         <div style="text-align: center; margin-bottom: 18px;">
-          <h3 id="detective-prompt" style="font-size: calc(21px * var(--font-scale)); font-weight: 800; color: #2C3E50;">
+          <h3 id="detective-prompt" style="font-size: calc(20px * var(--font-scale)); font-weight: 800; color: #2C3E50; margin-bottom: 10px;">
             Trouve : 👤 Qui ?
           </h3>
+          <div id="detective-subquestion" style="font-size: calc(22px * var(--font-scale)); font-weight: 800; color: #1E293B; background: #F1F5F9; border: 2px solid #CBD5E1; border-radius: 16px; padding: 12px 20px; display: inline-block; max-width: 95%; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+            Chargement de la question...
+          </div>
         </div>
 
         <!-- 4 Constituent Choices -->
@@ -1614,7 +1617,13 @@
         qui: "le jardinier",
         ou: "dans le potager",
         quand: "Ce matin",
-        pourquoi: "parce que la terre est sèche"
+        pourquoi: "parce que la terre est sèche",
+        questions: {
+          qui: "Qui arrose les tomates dans le potager ?",
+          ou: "Où le jardinier arrose-t-il les tomates ?",
+          quand: "Quand le jardinier arrose-t-il les tomates ?",
+          pourquoi: "Pourquoi le jardinier arrose-t-il les tomates ?"
+        }
       },
       {
         id: 2,
@@ -1622,7 +1631,13 @@
         qui: "La petite tortue",
         ou: "dans l'aquarium",
         quand: "après son repas",
-        pourquoi: "parce qu'elle est calme"
+        pourquoi: "parce qu'elle est calme",
+        questions: {
+          qui: "Qui nage doucement dans l'aquarium ?",
+          ou: "Où la petite tortue nage-t-elle doucement ?",
+          quand: "Quand la petite tortue nage-t-elle dans l'aquarium ?",
+          pourquoi: "Pourquoi la petite tortue nage-t-elle doucement ?"
+        }
       },
       {
         id: 3,
@@ -1630,7 +1645,13 @@
         qui: "Lucas",
         ou: "sur le banc",
         quand: "Pendant la récréation",
-        pourquoi: "parce que son ami a faim"
+        pourquoi: "parce que son ami a faim",
+        questions: {
+          qui: "Qui partage son biscuit pendant la récréation ?",
+          ou: "Où Lucas partage-t-il son biscuit ?",
+          quand: "Quand Lucas partage-t-il son biscuit ?",
+          pourquoi: "Pourquoi Lucas partage-t-il son biscuit ?"
+        }
       },
       {
         id: 4,
@@ -1638,7 +1659,13 @@
         qui: "Le boulanger",
         ou: "dans le four",
         quand: "très tôt le matin",
-        pourquoi: "pour les clients"
+        pourquoi: "pour les clients",
+        questions: {
+          qui: "Qui prépare des croissants chauds ?",
+          ou: "Où le boulanger prépare-t-il les croissants chauds ?",
+          quand: "Quand le boulanger prépare-t-il les croissants ?",
+          pourquoi: "Pourquoi le boulanger prépare-t-il des croissants chauds ?"
+        }
       },
       {
         id: 5,
@@ -1646,7 +1673,13 @@
         qui: "grand-papa",
         ou: "sur le balcon",
         quand: "Dimanche après-midi",
-        pourquoi: "parce qu'il fait beau"
+        pourquoi: "parce qu'il fait beau",
+        questions: {
+          qui: "Qui raconte une histoire amusante ?",
+          ou: "Où grand-papa raconte-t-il une histoire ?",
+          quand: "Quand grand-papa raconte-t-il une histoire amusante ?",
+          pourquoi: "Pourquoi grand-papa raconte-t-il une histoire sur le balcon ?"
+        }
       },
       {
         id: 6,
@@ -1654,7 +1687,13 @@
         qui: "Le chaton gris",
         ou: "sur le coussin du salon",
         quand: "chaque soir",
-        pourquoi: "car il cherche un endroit doux"
+        pourquoi: "car il cherche un endroit doux",
+        questions: {
+          qui: "Qui grimpe sur le coussin du salon ?",
+          ou: "Où le chaton gris grimpe-t-il chaque soir ?",
+          quand: "Quand le chaton gris grimpe-t-il sur le coussin ?",
+          pourquoi: "Pourquoi le chaton gris grimpe-t-il sur le coussin ?"
+        }
       },
       {
         id: 7,
@@ -1662,7 +1701,13 @@
         qui: "le cuisinier",
         ou: "sur la planche",
         quand: "À l'heure du midi",
-        pourquoi: "pour préparer une soupe"
+        pourquoi: "pour préparer une soupe",
+        questions: {
+          qui: "Qui coupe des légumes frais à l'heure du midi ?",
+          ou: "Où le cuisinier coupe-t-il les légumes frais ?",
+          quand: "Quand le cuisinier coupe-t-il des légumes frais ?",
+          pourquoi: "Pourquoi le cuisinier coupe-t-il des légumes frais ?"
+        }
       },
       {
         id: 8,
@@ -1670,7 +1715,13 @@
         qui: "Ma cousine Clara",
         ou: "sur une feuille blanche",
         quand: "aujourd'hui",
-        pourquoi: "parce qu'elle aime la peinture"
+        pourquoi: "parce qu'elle aime la peinture",
+        questions: {
+          qui: "Qui dessine un grand château aujourd'hui ?",
+          ou: "Où ma cousine Clara dessine-t-elle un grand château ?",
+          quand: "Quand ma cousine Clara dessine-t-elle un grand château ?",
+          pourquoi: "Pourquoi ma cousine Clara dessine-t-elle un grand château ?"
+        }
       },
       {
         id: 9,
@@ -1678,7 +1729,13 @@
         qui: "les écureuils",
         ou: "dans le grand chêne",
         quand: "En hiver",
-        pourquoi: "car la neige arrive bientôt"
+        pourquoi: "car la neige arrive bientôt",
+        questions: {
+          qui: "Qui cache des noisettes dans le grand chêne ?",
+          ou: "Où les écureuils cachent-ils des noisettes ?",
+          quand: "Quand les écureuils cachent-ils des noisettes ?",
+          pourquoi: "Pourquoi les écureuils cachent-ils des noisettes ?"
+        }
       },
       {
         id: 10,
@@ -1686,7 +1743,13 @@
         qui: "Lippe",
         ou: "dans le coffre bleu",
         quand: "Avant de dormir",
-        pourquoi: "pour garder sa chambre propre"
+        pourquoi: "pour garder sa chambre propre",
+        questions: {
+          qui: "Qui range ses jouets préférés avant de dormir ?",
+          ou: "Où Lippe range-t-il ses jouets préférés ?",
+          quand: "Quand Lippe range-t-il ses jouets préférés ?",
+          pourquoi: "Pourquoi Lippe range-t-il ses jouets dans le coffre bleu ?"
+        }
       }
     ];
 
@@ -1697,7 +1760,13 @@
         qui: "Lippe et son meilleur ami",
         ou: "au fond du jardin",
         quand: "Après la classe",
-        pourquoi: "pour cacher leurs trésors"
+        pourquoi: "pour cacher leurs trésors",
+        questions: {
+          qui: "Qui construit une grande cabane au fond du jardin ?",
+          ou: "Où Lippe et son meilleur ami construisent-ils la cabane ?",
+          quand: "Quand Lippe et son meilleur ami construisent-ils la cabane ?",
+          pourquoi: "Pourquoi construisent-ils une grande cabane au fond du jardin ?"
+        }
       },
       {
         id: 2,
@@ -1705,7 +1774,13 @@
         qui: "Le jeune magicien",
         ou: "sur la grande scène du théâtre",
         quand: "avant le spectacle",
-        pourquoi: "parce qu'il veut surprendre le public"
+        pourquoi: "parce qu'il veut surprendre le public",
+        questions: {
+          qui: "Qui répète ses tours de cartes avant le spectacle ?",
+          ou: "Où le jeune magicien répète-t-il ses tours de cartes ?",
+          quand: "Quand le jeune magicien répète-t-il ses tours de cartes ?",
+          pourquoi: "Pourquoi le jeune magicien répète-t-il ses tours de cartes ?"
+        }
       },
       {
         id: 3,
@@ -1713,7 +1788,13 @@
         qui: "le petit renard blanc",
         ou: "dans son terrier souterrain",
         quand: "Pendant la tempête de neige",
-        pourquoi: "car le vent souffle très fort"
+        pourquoi: "car le vent souffle très fort",
+        questions: {
+          qui: "Qui se cache dans son terrier souterrain ?",
+          ou: "Où le petit renard blanc se cache-t-il ?",
+          quand: "Quand le petit renard blanc se cache-t-il dans son terrier ?",
+          pourquoi: "Pourquoi le petit renard blanc se cache-t-il dans son terrier ?"
+        }
       },
       {
         id: 4,
@@ -1721,7 +1802,13 @@
         qui: "l'équipe de soccer",
         ou: "au stade municipal",
         quand: "Tous les mercredis après-midi",
-        pourquoi: "pour remporter la coupe des champions"
+        pourquoi: "pour remporter la coupe des champions",
+        questions: {
+          qui: "Qui s'entraîne au stade municipal ?",
+          ou: "Où l'équipe de soccer s'entraîne-t-elle ?",
+          quand: "Quand l'équipe de soccer s'entraîne-t-elle au stade ?",
+          pourquoi: "Pourquoi l'équipe de soccer s'entraîne-t-elle au stade municipal ?"
+        }
       },
       {
         id: 5,
@@ -1729,7 +1816,13 @@
         qui: "le capitaine du navire",
         ou: "sur le pont du bateau",
         quand: "Au lever du soleil",
-        pourquoi: "parce qu'il cherche une île mystérieuse"
+        pourquoi: "parce qu'il cherche une île mystérieuse",
+        questions: {
+          qui: "Qui regarde l'horizon avec ses jumelles ?",
+          ou: "Où le capitaine du navire regarde-t-il l'horizon ?",
+          quand: "Quand le capitaine du navire regarde-t-il l'horizon ?",
+          pourquoi: "Pourquoi le capitaine regarde-t-il l'horizon avec ses jumelles ?"
+        }
       },
       {
         id: 6,
@@ -1737,7 +1830,13 @@
         qui: "Les élèves de la classe",
         ou: "dans la bibliothèque municipale",
         quand: "cet après-midi",
-        pourquoi: "car ils préparent un projet"
+        pourquoi: "car ils préparent un projet",
+        questions: {
+          qui: "Qui lit des livres d'aventure en silence ?",
+          ou: "Où les élèves de la classe lisent-ils des livres d'aventure ?",
+          quand: "Quand les élèves lisent-ils dans la bibliothèque municipale ?",
+          pourquoi: "Pourquoi les élèves lisent-ils des livres d'aventure cet après-midi ?"
+        }
       },
       {
         id: 7,
@@ -1745,7 +1844,13 @@
         qui: "Rafael et Lippe",
         ou: "dans la cuisine",
         quand: "Avant le souper",
-        pourquoi: "pour faire une belle surprise à maman"
+        pourquoi: "pour faire une belle surprise à maman",
+        questions: {
+          qui: "Qui prépare des crêpes chaudes dans la cuisine ?",
+          ou: "Où Rafael et Lippe préparent-ils des crêpes chaudes ?",
+          quand: "Quand Rafael et Lippe préparent-ils des crêpes chaudes ?",
+          pourquoi: "Pourquoi Rafael et Lippe préparent-ils des crêpes chaudes ?"
+        }
       },
       {
         id: 8,
@@ -1753,7 +1858,13 @@
         qui: "La scientifique",
         ou: "au sommet de la montagne",
         quand: "pendant toute la nuit",
-        pourquoi: "parce que le ciel est très clair"
+        pourquoi: "parce que le ciel est très clair",
+        questions: {
+          qui: "Qui observe les planètes lointaines ?",
+          ou: "Où la scientifique observe-t-elle les planètes lointaines ?",
+          quand: "Quand la scientifique observe-t-elle les planètes lointaines ?",
+          pourquoi: "Pourquoi la scientifique observe-t-elle les planètes au sommet de la montagne ?"
+        }
       },
       {
         id: 9,
@@ -1761,7 +1872,13 @@
         qui: "les enfants joyeux",
         ou: "dans la cour de l'école",
         quand: "Dès le début de la récréation",
-        pourquoi: "pour jouer à la cachette"
+        pourquoi: "pour jouer à la cachette",
+        questions: {
+          qui: "Qui court dans la cour de l'école ?",
+          ou: "Où les enfants joyeux courent-ils ?",
+          quand: "Quand les enfants joyeux courent-ils dans la cour de l'école ?",
+          pourquoi: "Pourquoi les enfants joyeux courent-ils dans la cour de l'école ?"
+        }
       },
       {
         id: 10,
@@ -1769,7 +1886,13 @@
         qui: "Le pompier courageux",
         ou: "tout en haut de la grande échelle devant l'immeuble",
         quand: "ce matin",
-        pourquoi: "parce qu'un petit chat est coincé"
+        pourquoi: "parce qu'un petit chat est coincé",
+        questions: {
+          qui: "Qui grimpe tout en haut de la grande échelle ?",
+          ou: "Où le pompier courageux grimpe-t-il ce matin ?",
+          quand: "Quand le pompier courageux grimpe-t-il en haut de l'échelle ?",
+          pourquoi: "Pourquoi le pompier courageux grimpe-t-il tout en haut de l'échelle ?"
+        }
       },
       {
         id: 11,
@@ -1777,7 +1900,13 @@
         qui: "les campeurs",
         ou: "près de la rivière",
         quand: "À la tombée de la nuit",
-        pourquoi: "car l'air devient frais"
+        pourquoi: "car l'air devient frais",
+        questions: {
+          qui: "Qui allume un grand feu de camp ?",
+          ou: "Où les campeurs allument-ils un grand feu de camp ?",
+          quand: "Quand les campeurs allument-ils un grand feu de camp ?",
+          pourquoi: "Pourquoi les campeurs allument-ils un grand feu de camp ?"
+        }
       },
       {
         id: 12,
@@ -1785,7 +1914,13 @@
         qui: "Le robot intelligent",
         ou: "autour de la station spatiale",
         quand: "chaque matin",
-        pourquoi: "pour produire de l'électricité"
+        pourquoi: "pour produire de l'électricité",
+        questions: {
+          qui: "Qui répare les panneaux solaires chaque matin ?",
+          ou: "Où le robot intelligent répare-t-il les panneaux solaires ?",
+          quand: "Quand le robot intelligent répare-t-il les panneaux solaires ?",
+          pourquoi: "Pourquoi le robot intelligent répare-t-il les panneaux solaires ?"
+        }
       }
     ];
 
@@ -1891,13 +2026,25 @@
         container.appendChild(badge);
       });
 
-      // Update prompt
+      // Update prompt & sentence-specific question below it
       const promptEl = document.getElementById('detective-prompt');
+      const subQEl = document.getElementById('detective-subquestion');
       if (solvedCluesForCurrentPhrase.size === 4) {
         promptEl.innerHTML = '🎉 <span style="color:#27AE60;">Tous les indices trouvés ! Félicitations !</span>';
+        if (subQEl) {
+          subQEl.style.display = 'none';
+        }
       } else {
         const activeClueInfo = CLUE_TYPES.find(c => c.key === currentClueTargetKey);
+        const phrase = ADVANCED_PHRASES[currentDetectivePhraseIndex];
         promptEl.innerHTML = `🎯 Trouve l'indice : <span class="${activeClueInfo.cls}">${activeClueInfo.label} (${activeClueInfo.desc})</span>`;
+        if (subQEl) {
+          const qText = (phrase.questions && phrase.questions[currentClueTargetKey])
+            ? phrase.questions[currentClueTargetKey]
+            : activeClueInfo.label;
+          subQEl.style.display = 'inline-block';
+          subQEl.innerHTML = '💬 ' + formatQuestionWithKeywords(qText);
+        }
       }
     }
 
